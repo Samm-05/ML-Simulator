@@ -1,5 +1,3 @@
-
-import { EOF } from 'dns/promises'
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -37,4 +35,3 @@ const Simulator: React.FC = () => {
 };
 
 export default Simulator;
-EOF 

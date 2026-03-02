@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UIState {
   theme: 'light' | 'dark' | 'system';
+  onlineStatus: boolean;
   sidebarOpen: boolean;
   mobileMenuOpen: boolean;
   notifications: Notification[];
@@ -19,6 +20,7 @@ interface Notification {
 
 const initialState: UIState = {
   theme: 'system',
+  onlineStatus: navigator.onLine,
   sidebarOpen: true,
   mobileMenuOpen: false,
   notifications: [],
@@ -53,6 +55,9 @@ const uiSlice = createSlice({
           document.documentElement.classList.remove('dark');
         }
       }
+    },
+    setOnlineStatus: (state, action: PayloadAction<boolean>) => {
+      state.onlineStatus = action.payload;
     },
     toggleSidebar: (state) => {
       state.sidebarOpen = !state.sidebarOpen;
@@ -99,6 +104,7 @@ const uiSlice = createSlice({
 export const {
   toggleTheme,
   setTheme,
+  setOnlineStatus,
   toggleSidebar,
   setSidebarOpen,
   toggleMobileMenu,

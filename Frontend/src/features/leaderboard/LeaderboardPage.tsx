@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Trophy,
-  Medal,
   Award,
   TrendingUp,
   Users,
@@ -21,7 +20,7 @@ import LeaderboardTable from './LeaderboardTable';
 
 const LeaderboardPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { global, weekly, userRank, loading } = useAppSelector((state) => state.leaderboard);
+  const { global, weekly, byAlgorithm, userRank, loading } = useAppSelector((state) => state.leaderboard);
   const { user } = useAppSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState<'global' | 'weekly' | 'algorithms'>('global');
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>('linear-regression');
@@ -200,7 +199,7 @@ const LeaderboardPage: React.FC = () => {
               ? global
               : activeTab === 'weekly'
               ? weekly
-              : (selectedAlgorithm && leaderboardByAlgorithm[selectedAlgorithm]) || []
+              : (selectedAlgorithm && byAlgorithm[selectedAlgorithm]) || []
           }
           currentUserId={user?.id}
         />
