@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,6 +16,7 @@
   body {
     @apply bg-secondary-50 text-secondary-900 dark:bg-secondary-900 dark:text-secondary-100;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Poppins', 'Inter', 'Montserrat', sans-serif;
   }
 
   /* Typography */

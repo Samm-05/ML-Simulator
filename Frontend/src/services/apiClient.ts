@@ -37,6 +37,14 @@ apiClient.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
+        if (!refreshToken) {
+          store.dispatch(logout());
+          window.location.href = '/login';
+          return Promise.reject(error);
+        }
+        if (originalRequest.url?.includes('/auth/refresh-token')) {
+          return Promise.reject(error);
+        }
         const response = await axios.post(`${API_URL}/auth/refresh-token`, {
           refreshToken,
         });

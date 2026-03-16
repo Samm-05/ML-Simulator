@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import {
@@ -45,13 +45,13 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities }) => {
   const getActivityColor = (type: string) => {
     switch (type) {
       case 'practice':
-        return 'text-primary-500 bg-primary-500/10';
+        return 'text-primary-600 bg-primary-500/10';
       case 'simulation':
-        return 'text-accent-500 bg-accent-500/10';
+        return 'text-accent-600 bg-accent-500/10';
       case 'challenge':
         return 'text-warning bg-warning/10';
       case 'badge':
-        return 'text-purple-500 bg-purple-500/10';
+        return 'text-orange-500 bg-orange-500/10';
       default:
         return 'text-secondary-500 bg-secondary-500/10';
     }
@@ -72,7 +72,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities }) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {activities.map((activity, index) => {
         const Icon = getActivityIcon(activity.type);
         const colorClasses = getActivityColor(activity.type);
@@ -82,8 +82,8 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities }) => {
             key={activity.id}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="flex items-start space-x-3 p-3 rounded-lg hover:bg-secondary-50 dark:hover:bg-secondary-700/50 transition-colors cursor-pointer"
+            transition={{ delay: index * 0.08 }}
+            className="flex items-start gap-3 p-3 rounded-xl border border-transparent hover:border-secondary-200 dark:hover:border-secondary-700 hover:bg-secondary-50 dark:hover:bg-secondary-700/40 transition-colors"
           >
             <div className={`p-2 rounded-lg ${colorClasses}`}>
               <Icon className="w-4 h-4" />
@@ -100,7 +100,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities }) => {
               </p>
             </div>
             {activity.score && (
-              <span className="text-xs font-medium text-accent-500">
+              <span className="text-xs font-semibold text-accent-600 bg-accent-500/10 px-2 py-1 rounded-full">
                 +{activity.score} pts
               </span>
             )}

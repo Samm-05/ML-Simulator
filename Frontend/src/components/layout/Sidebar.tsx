@@ -41,13 +41,13 @@ const Sidebar: React.FC = () => {
       initial={false}
       animate={{ width: sidebarOpen ? 256 : 80 }}
       transition={{ duration: 0.3 }}
-      className="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white dark:bg-secondary-800 border-r border-secondary-200 dark:border-secondary-700 hidden lg:block overflow-hidden z-40"
+      className="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white dark:bg-secondary-900 border-r border-secondary-200/80 dark:border-secondary-800 hidden lg:block overflow-hidden z-40 shadow-soft"
     >
-      <div className="h-full flex flex-col relative">
+      <div className="h-full flex flex-col relative min-h-0">
         {/* Toggle Button */}
         <button
           onClick={() => dispatch(toggleSidebar())}
-          className="absolute -right-3 top-20 w-6 h-6 bg-white dark:bg-secondary-800 border border-secondary-200 dark:border-secondary-700 rounded-full flex items-center justify-center shadow-soft hover:shadow-medium transition-shadow z-10"
+          className="absolute -right-3 top-20 w-7 h-7 bg-white dark:bg-secondary-900 border border-secondary-200/70 dark:border-secondary-700 rounded-full flex items-center justify-center shadow-soft hover:shadow-medium transition-shadow z-10"
         >
           {sidebarOpen ? (
             <ChevronLeft className="w-4 h-4 text-secondary-500" />
@@ -56,18 +56,38 @@ const Sidebar: React.FC = () => {
           )}
         </button>
 
+        {/* Brand */}
+        <div className="px-4 pt-6 pb-2">
+          <div className={`flex items-center ${sidebarOpen ? 'gap-3' : 'justify-center'}`}>
+            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-primary-600 to-accent-500 text-white flex items-center justify-center shadow-soft">
+              <LayoutDashboard className="h-5 w-5" />
+            </div>
+            {sidebarOpen && (
+              <div>
+                <p className="text-sm font-semibold text-secondary-900 dark:text-white">ML Visual Lab</p>
+                <p className="text-xs text-secondary-500 dark:text-secondary-400">Student workspace</p>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-6 space-y-1">
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          {sidebarOpen && (
+            <p className="px-3 text-[11px] uppercase tracking-[0.18em] text-secondary-400 dark:text-secondary-500 mb-2">
+              Main
+            </p>
+          )}
           {menuItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center px-3 py-3 rounded-xl transition-all duration-200
+                `relative flex items-center px-3 py-3 rounded-2xl transition-all duration-200
                 ${!sidebarOpen ? 'justify-center' : 'space-x-3'}
                 ${isActive
-                  ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                  : 'text-secondary-600 dark:text-secondary-400 hover:bg-secondary-50 dark:hover:bg-secondary-700/50'
+                  ? 'bg-primary-600 text-white shadow-medium'
+                  : 'text-secondary-600 dark:text-secondary-400 hover:bg-secondary-100/70 dark:hover:bg-secondary-800/70'
                 }`
               }
             >
@@ -78,17 +98,22 @@ const Sidebar: React.FC = () => {
         </nav>
 
         {/* Bottom Section */}
-        <div className="px-3 py-6 border-t border-secondary-200 dark:border-secondary-700">
+        <div className="px-3 py-6 border-t border-secondary-200/70 dark:border-secondary-800 mt-auto">
+          {sidebarOpen && (
+            <p className="px-3 text-[11px] uppercase tracking-[0.18em] text-secondary-400 dark:text-secondary-500 mb-2">
+              Account
+            </p>
+          )}
           {bottomItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center px-3 py-3 rounded-xl transition-all duration-200
+                `flex items-center px-3 py-3 rounded-2xl transition-all duration-200
                 ${!sidebarOpen ? 'justify-center' : 'space-x-3'}
                 ${isActive
-                  ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                  : 'text-secondary-600 dark:text-secondary-400 hover:bg-secondary-50 dark:hover:bg-secondary-700/50'
+                  ? 'bg-secondary-900 text-white dark:bg-white dark:text-secondary-900'
+                  : 'text-secondary-600 dark:text-secondary-400 hover:bg-secondary-100/70 dark:hover:bg-secondary-800/70'
                 }`
               }
             >

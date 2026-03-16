@@ -33,13 +33,35 @@ interface AuthState {
   isAuthenticated: boolean;
 }
 
+const isTokenExpired = (token: string | null) => {
+  if (!token) return true;
+  try {
+    const payload = JSON.parse(
+      atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
+    );
+    if (!payload?.exp) return false;
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+};
+
+const storedToken = localStorage.getItem('accessToken');
+const storedRefreshToken = localStorage.getItem('refreshToken');
+const tokenExpired = isTokenExpired(storedToken);
+
+if (tokenExpired) {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+}
+
 const initialState: AuthState = {
   user: null,
-  token: localStorage.getItem('accessToken'),
-  refreshToken: localStorage.getItem('refreshToken'),
+  token: tokenExpired ? null : storedToken,
+  refreshToken: tokenExpired ? null : storedRefreshToken,
   isLoading: false,
   error: null,
-  isAuthenticated: !!localStorage.getItem('accessToken'),
+  isAuthenticated: !!storedToken && !tokenExpired,
 };
 
 export const login = createAsyncThunk(

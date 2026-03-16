@@ -17,9 +17,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // enable CORS for frontend
+const allowedOrigins = new Set(
+  [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    process.env.FRONTEND_URL,
+    ...(process.env.FRONTEND_URLS || '').split(',').map((origin) => origin.trim()),
+  ].filter(Boolean)
+);
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // allow non-browser clients (no origin header) and configured browser origins
+      if (!origin || allowedOrigins.has(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
   })
 );

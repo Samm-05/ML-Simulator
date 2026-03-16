@@ -1,13 +1,49 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { useAppDispatch } from './app/hooks';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setOnlineStatus } from './features/ui/uiSlice';
 import { ThemeProvider } from './contexts/ThemeContext';
 import AppRoutes from './routes/AppRoutes';
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
 import Footer from './components/layout/Footer';
+
+const APP_SHELL_ROUTES = ['/dashboard', '/simulator', '/practice', '/leaderboard', '/profile', '/settings'];
+const AUTH_ROUTES = ['/login', '/register', '/signup', '/forgot-password'];
+
+const RoutedApp: React.FC = () => {
+  const location = useLocation();
+  const { sidebarOpen } = useAppSelector((state) => state.ui);
+  const isAppShellRoute = APP_SHELL_ROUTES.some((route) => location.pathname.startsWith(route));
+  const isAuthRoute = AUTH_ROUTES.includes(location.pathname);
+  const isLandingRoute = location.pathname === '/';
+
+  if (isLandingRoute || isAuthRoute) {
+    return (
+      <div className="min-h-screen bg-secondary-50 dark:bg-secondary-900 transition-colors duration-300">
+        <AppRoutes />
+      </div>
+    );
+  }
+
+  if (isAppShellRoute) {
+    return (
+      <div className="min-h-screen bg-secondary-50 dark:bg-secondary-900 transition-colors duration-300 flex flex-col">
+        <Navbar />
+        <div className="flex flex-1">
+          <Sidebar />
+          <main className={`flex-1 pt-16 transition-all duration-300 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'}`}>
+            <AppRoutes />
+          </main>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return <AppRoutes />;
+};
 
 function App() {
   const dispatch = useAppDispatch();
@@ -28,16 +64,7 @@ function App() {
   return (
     <ThemeProvider>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <div className="min-h-screen bg-secondary-50 dark:bg-secondary-900 transition-colors duration-300 flex flex-col">
-          <Navbar />
-          <div className="flex flex-1">
-            <Sidebar />
-            <main className="flex-1 lg:ml-64 pt-16">
-              <AppRoutes />
-            </main>
-          </div>
-          <Footer />
-        </div>
+        <RoutedApp />
         <Toaster
           position="top-right"
           toastOptions={{

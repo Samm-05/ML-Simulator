@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import ProtectedRoute from './ProtectedRoute';
+import LandingPage from '../pages/landing/LandingPage';
 
 // Auth Pages
 import Login from '../features/auth/Login';
@@ -20,8 +21,10 @@ const AppRoutes: React.FC = () => {
     <AnimatePresence mode="wait">
       <Routes>
         {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/signup" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Protected Routes */}
@@ -35,8 +38,7 @@ const AppRoutes: React.FC = () => {
         </Route>
 
         {/* Default Routes */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
   );
