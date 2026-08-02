@@ -16,6 +16,8 @@ import PracticePage from '../features/practice/PracticePage';
 import LeaderboardPage from '../features/leaderboard/LeaderboardPage';
 import ProfilePage from '../features/profile/ProfilePage';
 
+import GradientDescentLab from '../features/gradientDescent/GradientDescentLab';
+
 const AppRoutes: React.FC = () => {
   return (
     <AnimatePresence mode="wait">
@@ -30,6 +32,8 @@ const AppRoutes: React.FC = () => {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/gradient-descent" element={<GradientDescentLab />} />
+          <Route path="/simulator/gradient-descent" element={<GradientDescentLab />} />
           <Route path="/simulator" element={<Simulator />} />
           <Route path="/simulator/:algorithm" element={<Simulator />} />
           <Route path="/practice" element={<PracticePage />} />

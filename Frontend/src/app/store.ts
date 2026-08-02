@@ -7,11 +7,14 @@ import leaderboardReducer from '../features/leaderboard/leaderboardSlice';
 import profileReducer from '../features/profile/profileSlice';
 import uiReducer from '../features/ui/uiSlice';
 
+import gradientDescentReducer from '../features/gradientDescent/gradientDescentSlice';
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     dashboard: dashboardReducer,
     simulator: simulatorReducer,
+    gradientDescent: gradientDescentReducer,
     practice: practiceReducer,
     leaderboard: leaderboardReducer,
     profile: profileReducer,
