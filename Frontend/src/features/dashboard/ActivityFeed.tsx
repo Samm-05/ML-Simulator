@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import {
@@ -17,9 +17,6 @@ interface Activity {
   description: string;
   timestamp: string;
   score?: number;
-  icon?: string;
-  color?: string;
-  bgColor?: string;
 }
 
 interface ActivityFeedProps {
@@ -42,31 +39,12 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities }) => {
     }
   };
 
-  const getActivityColor = (type: string) => {
-    switch (type) {
-      case 'practice':
-        return 'text-primary-600 bg-primary-500/10';
-      case 'simulation':
-        return 'text-accent-600 bg-accent-500/10';
-      case 'challenge':
-        return 'text-warning bg-warning/10';
-      case 'badge':
-        return 'text-orange-500 bg-orange-500/10';
-      default:
-        return 'text-secondary-500 bg-secondary-500/10';
-    }
-  };
-
   if (!activities || activities.length === 0) {
     return (
       <div className="text-center py-8">
-        <Trophy className="w-12 h-12 text-secondary-300 mx-auto mb-3" />
-        <p className="text-secondary-500 dark:text-secondary-400">
-          No recent activity
-        </p>
-        <p className="text-sm text-secondary-400 mt-1">
-          Start practicing to see your activity here
-        </p>
+        <Trophy className="w-10 h-10 text-apres mx-auto mb-2" />
+        <p className="text-sm font-medium text-slopes">No recent activity logged</p>
+        <p className="text-xs text-apres mt-0.5">Start practicing to track your timeline</p>
       </div>
     );
   }
@@ -75,33 +53,28 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities }) => {
     <div className="space-y-3">
       {activities.map((activity, index) => {
         const Icon = getActivityIcon(activity.type);
-        const colorClasses = getActivityColor(activity.type);
 
         return (
           <motion.div
             key={activity.id}
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.08 }}
-            className="flex items-start gap-3 p-3 rounded-xl border border-transparent hover:border-secondary-200 dark:hover:border-secondary-700 hover:bg-secondary-50 dark:hover:bg-secondary-700/40 transition-colors"
+            transition={{ delay: index * 0.06 }}
+            className="flex items-start gap-3 p-3 rounded-xl bg-midnight/60 border border-mountainside/60 hover:border-apres transition-all duration-200"
           >
-            <div className={`p-2 rounded-lg ${colorClasses}`}>
-              <Icon className="w-4 h-4" />
+            <div className="p-2 rounded-lg bg-mountainside border border-apres/40 text-arctic shrink-0">
+              <Icon className="w-4 h-4 text-slopes" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-secondary-900 dark:text-white">
-                {activity.title}
-              </p>
-              <p className="text-xs text-secondary-500 dark:text-secondary-400 mt-0.5">
-                {activity.description}
-              </p>
-              <p className="text-xs text-secondary-400 mt-1">
+              <p className="text-xs font-bold text-arctic tracking-tight">{activity.title}</p>
+              <p className="text-[11px] text-slopes mt-0.5">{activity.description}</p>
+              <p className="text-[10px] font-mono text-apres mt-1">
                 {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
               </p>
             </div>
             {activity.score && (
-              <span className="text-xs font-semibold text-accent-600 bg-accent-500/10 px-2 py-1 rounded-full">
-                +{activity.score} pts
+              <span className="text-[10px] font-mono font-bold text-arctic bg-mountainside border border-apres/40 px-2 py-0.5 rounded-full shrink-0">
+                +{activity.score} XP
               </span>
             )}
           </motion.div>

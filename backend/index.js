@@ -9,6 +9,7 @@ const profileRoutes = require('./routes/profile');
 const dashboardRoutes = require('./routes/dashboard');
 const leaderboardRoutes = require('./routes/leaderboard');
 const simulationRoutes = require('./routes/simulations');
+const practiceRoutes = require('./routes/practice');
 
 const app = express();
 
@@ -21,6 +22,7 @@ const allowedOrigins = new Set(
   [
     'http://localhost:3000',
     'http://localhost:3001',
+    'http://localhost:5173',
     process.env.FRONTEND_URL,
     ...(process.env.FRONTEND_URLS || '').split(',').map((origin) => origin.trim()),
   ].filter(Boolean)
@@ -49,6 +51,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/simulations', simulationRoutes);
+app.use('/api/practice', practiceRoutes);
 
 // fallback
 app.get('/', (req, res) => {

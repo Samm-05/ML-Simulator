@@ -1,22 +1,27 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
   Brain,
   Target,
   Trophy,
   User,
-  BookOpen,
   Settings,
-  History,
-  BarChart3,
-  ChevronLeft,
-  ChevronRight,
+  Search,
 } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { toggleSidebar } from '../../features/ui/uiSlice';
 
+/**
+ * ChatGPT-Style Collapsible Sidebar Component for ML Visual Lab
+ * 
+ * Behavior & Architecture:
+ * 1. Default State: Starts COLLAPSED as a narrow 64px (w-16) icon rail.
+ * 2. Logo Row Toggle: Clicking the top-left Logo row toggles expanded (240px / w-60) and collapsed states.
+ * 3. Fixed Left Position: Anchored at `left-0`. Only width expands/contracts using CSS `transition-[width] duration-200 ease-out`.
+ * 4. Staggered Text Fade-In: Text labels use delayed opacity transition (`delay-100`) when expanding so labels never appear squished mid-animation.
+ * 5. Icon Stability: Icons stay perfectly fixed in horizontal position using a dedicated `w-10 h-10 flex items-center justify-center shrink-0` container.
+ */
 const Sidebar: React.FC = () => {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
@@ -24,106 +29,160 @@ const Sidebar: React.FC = () => {
 
   if (!isAuthenticated) return null;
 
-  const menuItems = [
+  const mainNavItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/simulator', icon: Brain, label: 'Simulator' },
     { path: '/practice', icon: Target, label: 'Practice' },
     { path: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
   ];
 
-  const bottomItems = [
+  const accountItems = [
     { path: '/profile', icon: User, label: 'Profile' },
     { path: '/settings', icon: Settings, label: 'Settings' },
   ];
 
   return (
-    <motion.aside
-      initial={false}
-      animate={{ width: sidebarOpen ? 256 : 80 }}
-      transition={{ duration: 0.3 }}
-      className="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white dark:bg-secondary-900 border-r border-secondary-200/80 dark:border-secondary-800 hidden lg:block overflow-hidden z-40 shadow-soft"
+    <aside
+      className={`
+        fixed left-0 top-16 h-[calc(100vh-4rem)]
+        bg-midnight border-r border-mountainside
+        hidden lg:block z-40 shadow-soft select-none
+        transition-[width] duration-200 ease-out
+        ${sidebarOpen ? 'w-60' : 'w-16'}
+      `}
     >
-      <div className="h-full flex flex-col relative min-h-0">
-        {/* Toggle Button */}
-        <button
-          onClick={() => dispatch(toggleSidebar())}
-          className="absolute -right-3 top-20 w-7 h-7 bg-white dark:bg-secondary-900 border border-secondary-200/70 dark:border-secondary-700 rounded-full flex items-center justify-center shadow-soft hover:shadow-medium transition-shadow z-10"
-        >
-          {sidebarOpen ? (
-            <ChevronLeft className="w-4 h-4 text-secondary-500" />
-          ) : (
-            <ChevronRight className="w-4 h-4 text-secondary-500" />
-          )}
-        </button>
-
-        {/* Brand */}
-        <div className="px-4 pt-6 pb-2">
-          <div className={`flex items-center ${sidebarOpen ? 'gap-3' : 'justify-center'}`}>
-            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-primary-600 to-accent-500 text-white flex items-center justify-center shadow-soft">
-              <LayoutDashboard className="h-5 w-5" />
+      <div className="h-full flex flex-col justify-between py-4 px-2 overflow-hidden">
+        
+        {/* Top Container: Logo Toggle + Search + Main Navigation */}
+        <div className="space-y-3">
+          
+          {/* 1. LOGO ROW (Acts as the main toggle button) */}
+          <button
+            type="button"
+            onClick={() => dispatch(toggleSidebar())}
+            aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-mountainside/60 transition-colors duration-150 cursor-pointer focus:outline-none focus:ring-1 focus:ring-slopes group text-left"
+          >
+            {/* Fixed Icon Position */}
+            <div className="w-10 h-10 rounded-xl bg-mountainside border border-apres/40 text-arctic flex items-center justify-center shadow-soft shrink-0 group-hover:border-slopes transition-colors">
+              <Brain className="w-5 h-5 text-slopes group-hover:text-arctic transition-colors" />
             </div>
+
+            {/* Wordmark Label with Staggered Fade-In */}
+            <div
+              className={`
+                flex flex-col whitespace-nowrap overflow-hidden
+                transition-all duration-150 ease-out
+                ${sidebarOpen ? 'opacity-100 delay-100 translate-x-0' : 'opacity-0 -translate-x-2 pointer-events-none w-0'}
+              `}
+            >
+              <span className="text-sm font-bold text-arctic tracking-tight">ML Visual Lab</span>
+              <span className="text-[10px] font-mono text-apres">Studio Lab</span>
+            </div>
+          </button>
+
+          {/* 2. SEARCH ROW */}
+          <button
+            type="button"
+            onClick={() => {
+              if (!sidebarOpen) dispatch(toggleSidebar());
+            }}
+            className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-mountainside/50 text-slopes hover:text-arctic transition-colors duration-150 cursor-pointer group text-left"
+          >
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-slopes group-hover:text-arctic">
+              <Search className="w-5 h-5" />
+            </div>
+            <span
+              className={`
+                text-xs font-mono text-apres group-hover:text-slopes whitespace-nowrap overflow-hidden
+                transition-all duration-150 ease-out
+                ${sidebarOpen ? 'opacity-100 delay-100 translate-x-0' : 'opacity-0 -translate-x-2 pointer-events-none w-0'}
+              `}
+            >
+              Search models...
+            </span>
+          </button>
+
+          {/* 3. MAIN NAVIGATION */}
+          <nav className="space-y-1">
             {sidebarOpen && (
-              <div>
-                <p className="text-sm font-semibold text-secondary-900 dark:text-white">ML Visual Lab</p>
-                <p className="text-xs text-secondary-500 dark:text-secondary-400">Student workspace</p>
-              </div>
+              <p className="px-3 text-[10px] font-mono uppercase tracking-widest text-apres mb-2 transition-opacity duration-150 delay-100">
+                Navigation
+              </p>
             )}
-          </div>
+            {mainNavItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 p-1.5 rounded-xl transition-all duration-150
+                  ${
+                    isActive
+                      ? 'bg-mountainside text-arctic border border-apres/50 shadow-soft'
+                      : 'text-slopes hover:text-arctic hover:bg-mountainside/40 border border-transparent'
+                  }`
+                }
+              >
+                {/* Fixed Icon Container */}
+                <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                  <item.icon className="w-5 h-5" />
+                </div>
+
+                {/* Text Label */}
+                <span
+                  className={`
+                    text-xs font-medium whitespace-nowrap overflow-hidden
+                    transition-all duration-150 ease-out
+                    ${sidebarOpen ? 'opacity-100 delay-100 translate-x-0' : 'opacity-0 -translate-x-2 pointer-events-none w-0'}
+                  `}
+                >
+                  {item.label}
+                </span>
+              </NavLink>
+            ))}
+          </nav>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        {/* Bottom Container: Divider + Account Preferences */}
+        <div className="space-y-1 pt-2 border-t border-mountainside/80">
           {sidebarOpen && (
-            <p className="px-3 text-[11px] uppercase tracking-[0.18em] text-secondary-400 dark:text-secondary-500 mb-2">
-              Main
-            </p>
-          )}
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `relative flex items-center px-3 py-3 rounded-2xl transition-all duration-200
-                ${!sidebarOpen ? 'justify-center' : 'space-x-3'}
-                ${isActive
-                  ? 'bg-primary-600 text-white shadow-medium'
-                  : 'text-secondary-600 dark:text-secondary-400 hover:bg-secondary-100/70 dark:hover:bg-secondary-800/70'
-                }`
-              }
-            >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
-              {sidebarOpen && <span className="text-sm font-medium">{item.label}</span>}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* Bottom Section */}
-        <div className="px-3 py-6 border-t border-secondary-200/70 dark:border-secondary-800 mt-auto">
-          {sidebarOpen && (
-            <p className="px-3 text-[11px] uppercase tracking-[0.18em] text-secondary-400 dark:text-secondary-500 mb-2">
+            <p className="px-3 text-[10px] font-mono uppercase tracking-widest text-apres mb-2 transition-opacity duration-150 delay-100">
               Account
             </p>
           )}
-          {bottomItems.map((item) => (
+          {accountItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center px-3 py-3 rounded-2xl transition-all duration-200
-                ${!sidebarOpen ? 'justify-center' : 'space-x-3'}
-                ${isActive
-                  ? 'bg-secondary-900 text-white dark:bg-white dark:text-secondary-900'
-                  : 'text-secondary-600 dark:text-secondary-400 hover:bg-secondary-100/70 dark:hover:bg-secondary-800/70'
+                `flex items-center gap-3 p-1.5 rounded-xl transition-all duration-150
+                ${
+                  isActive
+                    ? 'bg-mountainside text-arctic border border-apres/50 shadow-soft'
+                    : 'text-slopes hover:text-arctic hover:bg-mountainside/40 border border-transparent'
                 }`
               }
             >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
-              {sidebarOpen && <span className="text-sm font-medium">{item.label}</span>}
+              {/* Fixed Icon Container */}
+              <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                <item.icon className="w-5 h-5" />
+              </div>
+
+              {/* Text Label */}
+              <span
+                className={`
+                  text-xs font-medium whitespace-nowrap overflow-hidden
+                  transition-all duration-150 ease-out
+                  ${sidebarOpen ? 'opacity-100 delay-100 translate-x-0' : 'opacity-0 -translate-x-2 pointer-events-none w-0'}
+                `}
+              >
+                {item.label}
+              </span>
             </NavLink>
           ))}
         </div>
       </div>
-    </motion.aside>
+    </aside>
   );
 };
 

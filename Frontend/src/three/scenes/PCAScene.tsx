@@ -11,11 +11,11 @@ const PCAScene: React.FC<PCASceneProps> = ({ step }) => {
     <>
       {step.points.map((point) => (
         <Sphere key={point.id} position={[point.x, point.y, point.z]} args={[0.08, 10, 10]}>
-          <meshStandardMaterial color="#14b8a6" />
+          <meshStandardMaterial color="#B3B7BA" roughness={0.3} />
         </Sphere>
       ))}
       {step.vectors?.map((vector, idx) => (
-        <Line key={`vec-${idx}`} points={[vector.start, vector.end]} color={vector.color} lineWidth={2} />
+        <Line key={`vec-${idx}`} points={[vector.start, vector.end]} color="#D3D1CE" lineWidth={2.5} />
       ))}
     </>
   );

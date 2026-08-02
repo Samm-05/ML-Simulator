@@ -11,14 +11,14 @@ const RegressionScene: React.FC<RegressionSceneProps> = ({ step }) => {
     <>
       {step.points.map((point) => (
         <Sphere key={point.id} position={[point.x, point.y, point.z]} args={[0.08, 10, 10]}>
-          <meshStandardMaterial color="#14b8a6" />
+          <meshStandardMaterial color="#B3B7BA" roughness={0.3} />
         </Sphere>
       ))}
       {step.regressionLine && (
-        <Line points={[step.regressionLine.start, step.regressionLine.end]} color="#6366f1" lineWidth={2} />
+        <Line points={[step.regressionLine.start, step.regressionLine.end]} color="#D3D1CE" lineWidth={2.5} />
       )}
       {step.errorSegments?.map((segment, index) => (
-        <Line key={`err-${index}`} points={[segment.from, segment.to]} color="#ef4444" dashed dashSize={0.08} gapSize={0.08} />
+        <Line key={`err-${index}`} points={[segment.from, segment.to]} color="#EF4444" opacity={0.6} transparent dashed dashSize={0.08} gapSize={0.08} />
       ))}
     </>
   );

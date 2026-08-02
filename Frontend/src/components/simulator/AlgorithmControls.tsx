@@ -11,8 +11,8 @@ interface AlgorithmControlsProps {
 
 const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({ definitions, values, onChange }) => {
   return (
-    <section className="rounded-xl border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 p-4">
-      <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-50 mb-3">Parameter Controls</h3>
+    <section className="rounded-2xl border border-mountainside bg-secondary-900/90 backdrop-blur-xl p-4 shadow-soft">
+      <h3 className="text-sm font-bold text-arctic uppercase tracking-wider mb-3">Hyperparameters</h3>
       <div className="space-y-4">
         {definitions.map((definition, index) => (
           <motion.div key={definition.key} variants={itemVariant} initial="hidden" animate="visible" custom={index}>
@@ -24,9 +24,9 @@ const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({ definitions, valu
                   const safeValue = Number.isFinite(numericValue) ? numericValue : definition.min;
                   return (
                     <>
-                      <label className="flex justify-between text-sm text-secondary-600 dark:text-secondary-300 mb-1">
+                      <label className="flex justify-between text-xs font-medium text-slopes mb-1.5">
                         <span>{definition.label}</span>
-                        <span className="font-medium">{safeValue}</span>
+                        <span className="font-mono text-arctic font-bold">{safeValue}</span>
                       </label>
                       <input
                         type="range"
@@ -35,7 +35,7 @@ const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({ definitions, valu
                         step={definition.step}
                         value={safeValue}
                         onChange={(event) => onChange(definition.key, Number(event.target.value))}
-                        className="w-full accent-primary-600"
+                        className="w-full accent-arctic bg-mountainside rounded-lg h-1.5"
                       />
                     </>
                   );
@@ -43,14 +43,14 @@ const AlgorithmControls: React.FC<AlgorithmControlsProps> = ({ definitions, valu
               </>
             ) : (
               <>
-                <label className="block text-sm text-secondary-600 dark:text-secondary-300 mb-1">{definition.label}</label>
+                <label className="block text-xs font-medium text-slopes mb-1.5">{definition.label}</label>
                 <select
                   value={String(values[definition.key])}
                   onChange={(event) => onChange(definition.key, event.target.value)}
-                  className="w-full rounded-lg border border-secondary-300 dark:border-secondary-600 bg-secondary-50 dark:bg-secondary-900 px-3 py-2 text-sm"
+                  className="w-full rounded-xl border border-mountainside bg-mountainside/50 px-3 py-2 text-xs font-mono text-arctic focus:outline-none focus:border-slopes"
                 >
                   {definition.options.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <option key={option.value} value={option.value} className="bg-secondary-900 text-arctic">
                       {option.label}
                     </option>
                   ))}

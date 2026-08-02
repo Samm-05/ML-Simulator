@@ -11,11 +11,11 @@ const LogisticScene: React.FC<LogisticSceneProps> = ({ step }) => {
     <>
       {step.points.map((point) => (
         <Sphere key={point.id} position={[point.x, point.y, point.z]} args={[0.09, 12, 12]}>
-          <meshStandardMaterial color={point.label === 1 ? '#ef4444' : '#22c55e'} />
+          <meshStandardMaterial color={point.label === 1 ? '#EF4444' : '#10B981'} roughness={0.4} />
         </Sphere>
       ))}
       {step.regressionLine && (
-        <Line points={[step.regressionLine.start, step.regressionLine.end]} color="#6366f1" lineWidth={2} />
+        <Line points={[step.regressionLine.start, step.regressionLine.end]} color="#D3D1CE" lineWidth={2.5} />
       )}
     </>
   );

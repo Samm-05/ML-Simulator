@@ -25,8 +25,8 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   onSpeedChange,
 }) => {
   return (
-    <section className="rounded-xl border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 p-4">
-      <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-50 mb-3">Playback Controls</h3>
+    <section className="rounded-2xl border border-mountainside bg-secondary-900/90 backdrop-blur-xl p-4 shadow-soft">
+      <h3 className="text-sm font-bold text-arctic uppercase tracking-wider mb-3">Playback Controls</h3>
       <div className="grid grid-cols-5 gap-2">
         <motion.button
           variants={buttonVariant}
@@ -35,7 +35,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
           whileTap="tap"
           type="button"
           onClick={onPlayPause}
-          className="rounded-lg bg-primary-600 hover:bg-primary-700 text-white p-2 flex items-center justify-center"
+          className="rounded-xl bg-arctic text-midnight hover:bg-slopes p-2.5 flex items-center justify-center transition-colors shadow-soft"
         >
           {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
         </motion.button>
@@ -47,7 +47,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
           type="button"
           onClick={onStepForward}
           disabled={!canStep}
-          className="rounded-lg bg-secondary-200 dark:bg-secondary-700 p-2 flex items-center justify-center disabled:opacity-50"
+          className="rounded-xl bg-mountainside text-slopes hover:text-arctic border border-apres/40 p-2.5 flex items-center justify-center disabled:opacity-40 transition-colors"
         >
           <SkipForward className="w-4 h-4" />
         </motion.button>
@@ -58,7 +58,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
           whileTap="tap"
           type="button"
           onClick={onReset}
-          className="rounded-lg bg-secondary-200 dark:bg-secondary-700 p-2 flex items-center justify-center"
+          className="rounded-xl bg-mountainside text-slopes hover:text-arctic border border-apres/40 p-2.5 flex items-center justify-center transition-colors"
         >
           <RotateCcw className="w-4 h-4" />
         </motion.button>
@@ -69,19 +69,19 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
           whileTap="tap"
           type="button"
           onClick={onRandomize}
-          className="rounded-lg bg-secondary-200 dark:bg-secondary-700 p-2 flex items-center justify-center"
+          className="rounded-xl bg-mountainside text-slopes hover:text-arctic border border-apres/40 p-2.5 flex items-center justify-center transition-colors"
         >
           <Shuffle className="w-4 h-4" />
         </motion.button>
         <select
           value={speed}
           onChange={(event) => onSpeedChange(Number(event.target.value))}
-          className="rounded-lg border border-secondary-300 dark:border-secondary-600 bg-secondary-50 dark:bg-secondary-900 px-2 text-sm"
+          className="rounded-xl border border-mountainside bg-mountainside/50 text-arctic font-mono px-2 text-xs focus:outline-none"
         >
-          <option value={0.5}>0.5x</option>
-          <option value={1}>1x</option>
-          <option value={1.5}>1.5x</option>
-          <option value={2}>2x</option>
+          <option value={0.5} className="bg-secondary-900">0.5x</option>
+          <option value={1} className="bg-secondary-900">1x</option>
+          <option value={1.5} className="bg-secondary-900">1.5x</option>
+          <option value={2} className="bg-secondary-900">2x</option>
         </select>
       </div>
     </section>

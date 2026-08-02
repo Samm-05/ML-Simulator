@@ -9,27 +9,27 @@ interface DatasetControlsProps {
 
 const DatasetControls: React.FC<DatasetControlsProps> = ({ value, onChange, onRandomize }) => {
   return (
-    <section className="rounded-xl border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 p-4">
-      <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-50 mb-3">Dataset Controls</h3>
+    <section className="rounded-2xl border border-mountainside bg-secondary-900/90 backdrop-blur-xl p-4 shadow-soft">
+      <h3 className="text-sm font-bold text-arctic uppercase tracking-wider mb-3">Dataset Config</h3>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm text-secondary-600 dark:text-secondary-300 mb-1">Sample Dataset</label>
+          <label className="block text-xs font-medium text-slopes mb-1.5">Preset Morphology</label>
           <select
             value={value.preset}
             onChange={(event) => onChange({ ...value, preset: event.target.value as DatasetConfig['preset'] })}
-            className="w-full rounded-lg border border-secondary-300 dark:border-secondary-600 bg-secondary-50 dark:bg-secondary-900 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-mountainside bg-mountainside/50 px-3 py-2 text-xs font-mono text-arctic focus:outline-none focus:border-slopes"
           >
-            <option value="random">Random</option>
-            <option value="blobs">Blobs</option>
-            <option value="line">Line</option>
-            <option value="classification">Classification</option>
-            <option value="moons">Moons</option>
+            <option value="random" className="bg-secondary-900">Random Distribution</option>
+            <option value="blobs" className="bg-secondary-900">Gaussian Blobs</option>
+            <option value="line" className="bg-secondary-900">Linear Manifold</option>
+            <option value="classification" className="bg-secondary-900">Classification Space</option>
+            <option value="moons" className="bg-secondary-900">Interlocking Moons</option>
           </select>
         </div>
         <div>
-          <label className="flex justify-between text-sm text-secondary-600 dark:text-secondary-300 mb-1">
-            <span>Dataset Size</span>
-            <span className="font-medium">{value.size}</span>
+          <label className="flex justify-between text-xs font-medium text-slopes mb-1.5">
+            <span>Sample Points</span>
+            <span className="font-mono text-arctic font-bold">{value.size}</span>
           </label>
           <input
             type="range"
@@ -38,13 +38,13 @@ const DatasetControls: React.FC<DatasetControlsProps> = ({ value, onChange, onRa
             step={10}
             value={value.size}
             onChange={(event) => onChange({ ...value, size: Number(event.target.value) })}
-            className="w-full accent-primary-600"
+            className="w-full accent-arctic bg-mountainside rounded-lg h-1.5"
           />
         </div>
         <div>
-          <label className="flex justify-between text-sm text-secondary-600 dark:text-secondary-300 mb-1">
-            <span>Noise Level</span>
-            <span className="font-medium">{value.noise.toFixed(2)}</span>
+          <label className="flex justify-between text-xs font-medium text-slopes mb-1.5">
+            <span>Noise Variance</span>
+            <span className="font-mono text-arctic font-bold">{value.noise.toFixed(2)}</span>
           </label>
           <input
             type="range"
@@ -53,15 +53,15 @@ const DatasetControls: React.FC<DatasetControlsProps> = ({ value, onChange, onRa
             step={0.01}
             value={value.noise}
             onChange={(event) => onChange({ ...value, noise: Number(event.target.value) })}
-            className="w-full accent-primary-600"
+            className="w-full accent-arctic bg-mountainside rounded-lg h-1.5"
           />
         </div>
         <button
           type="button"
           onClick={onRandomize}
-          className="w-full rounded-lg border border-primary-500 text-primary-600 dark:text-primary-300 px-4 py-2 font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+          className="w-full rounded-xl border border-apres text-arctic bg-mountainside/60 px-4 py-2 text-xs font-semibold hover:bg-mountainside hover:border-slopes transition-colors"
         >
-          Randomize Dataset
+          Reseed Random Points
         </button>
       </div>
     </section>

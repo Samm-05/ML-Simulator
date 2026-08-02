@@ -35,18 +35,32 @@ const GraphPanel: React.FC<GraphPanelProps> = ({
   }));
 
   return (
-    <section className="rounded-xl border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 p-5">
-      <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-50 mb-3">Graph Output</h3>
-      <div className="h-64">
+    <section className="rounded-2xl border border-mountainside bg-secondary-900/90 backdrop-blur-xl p-5 shadow-soft">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-base font-bold text-arctic tracking-tight">Convergence Analytics</h3>
+        <span className="text-[10px] font-mono text-apres uppercase tracking-widest">
+          Loss & Metric History
+        </span>
+      </div>
+      <div className="h-64 p-2 rounded-xl bg-midnight border border-mountainside/60">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={history}>
-            <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.25} />
-            <XAxis dataKey="step" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey={primaryKey} name={primaryLabel} stroke="#6366f1" strokeWidth={2} dot={false} />
-            <Line type="monotone" dataKey={secondaryKey} name={secondaryLabel} stroke="#14b8a6" strokeWidth={2} dot={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#262E36" />
+            <XAxis dataKey="step" stroke="#6C6D74" fontSize={11} fontFamily="JetBrains Mono" />
+            <YAxis stroke="#6C6D74" fontSize={11} fontFamily="JetBrains Mono" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#141A21',
+                borderColor: '#262E36',
+                borderRadius: '0.75rem',
+                color: '#D3D1CE',
+                fontSize: '12px',
+                fontFamily: 'JetBrains Mono',
+              }}
+            />
+            <Legend wrapperStyle={{ fontSize: '11px', color: '#B3B7BA' }} />
+            <Line type="monotone" dataKey={primaryKey} name={primaryLabel} stroke="#B3B7BA" strokeWidth={2.5} dot={false} />
+            <Line type="monotone" dataKey={secondaryKey} name={secondaryLabel} stroke="#D3D1CE" strokeWidth={2} strokeDasharray="4 4" dot={false} />
           </LineChart>
         </ResponsiveContainer>
       </div>

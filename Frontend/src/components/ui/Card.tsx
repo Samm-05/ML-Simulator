@@ -16,13 +16,14 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <motion.div
-      whileHover={hoverable ? { y: -4 } : {}}
+      whileHover={hoverable ? { y: -3 } : {}}
       className={`
-        bg-white dark:bg-secondary-800
-        rounded-xl shadow-soft
-        border border-secondary-100 dark:border-secondary-700
+        bg-secondary-900/90
+        rounded-2xl shadow-soft
+        border border-mountainside/80
+        backdrop-blur-xl
         transition-all duration-200
-        ${hoverable ? 'cursor-pointer hover:shadow-medium' : ''}
+        ${hoverable ? 'cursor-pointer hover:border-apres hover:shadow-medium' : ''}
         ${className}
       `}
       onClick={onClick}

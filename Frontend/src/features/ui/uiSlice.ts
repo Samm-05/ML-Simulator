@@ -21,7 +21,7 @@ interface Notification {
 const initialState: UIState = {
   theme: 'system',
   onlineStatus: navigator.onLine,
-  sidebarOpen: true,
+  sidebarOpen: false, // Default to COLLAPSED state as specified
   mobileMenuOpen: false,
   notifications: [],
   modalState: {},
@@ -47,7 +47,6 @@ const uiSlice = createSlice({
       } else if (action.payload === 'light') {
         document.documentElement.classList.remove('dark');
       } else {
-        // System theme
         const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         if (systemDark) {
           document.documentElement.classList.add('dark');
