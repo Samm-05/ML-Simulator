@@ -55,6 +55,13 @@ const Navbar: React.FC = () => {
                 Dashboard
               </Link>
               <Link
+                to="/linear-regression"
+                className="text-sm font-medium text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1 font-semibold"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                Linear Lab
+              </Link>
+              <Link
                 to="/gradient-descent"
                 className="text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-1 font-semibold"
               >

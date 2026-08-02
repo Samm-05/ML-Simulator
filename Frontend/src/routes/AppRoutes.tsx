@@ -17,6 +17,7 @@ import LeaderboardPage from '../features/leaderboard/LeaderboardPage';
 import ProfilePage from '../features/profile/ProfilePage';
 
 import GradientDescentLab from '../features/gradientDescent/GradientDescentLab';
+import LinearRegressionLab from '../features/linearRegression/LinearRegressionLab';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -32,6 +33,8 @@ const AppRoutes: React.FC = () => {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/linear-regression" element={<LinearRegressionLab />} />
+          <Route path="/simulator/linear-regression" element={<LinearRegressionLab />} />
           <Route path="/gradient-descent" element={<GradientDescentLab />} />
           <Route path="/simulator/gradient-descent" element={<GradientDescentLab />} />
           <Route path="/simulator" element={<Simulator />} />

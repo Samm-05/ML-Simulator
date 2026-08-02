@@ -9,7 +9,7 @@ import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
 import Footer from './components/layout/Footer';
 
-const APP_SHELL_ROUTES = ['/dashboard', '/gradient-descent', '/simulator', '/practice', '/leaderboard', '/profile', '/settings'];
+const APP_SHELL_ROUTES = ['/dashboard', '/linear-regression', '/gradient-descent', '/simulator', '/practice', '/leaderboard', '/profile', '/settings'];
 const AUTH_ROUTES = ['/login', '/register', '/signup', '/forgot-password'];
 
 const RoutedApp: React.FC = () => {

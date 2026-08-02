@@ -8,12 +8,14 @@ import profileReducer from '../features/profile/profileSlice';
 import uiReducer from '../features/ui/uiSlice';
 
 import gradientDescentReducer from '../features/gradientDescent/gradientDescentSlice';
+import linearRegressionReducer from '../features/linearRegression/linearRegressionSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   dashboard: dashboardReducer,
   simulator: simulatorReducer,
   gradientDescent: gradientDescentReducer,
+  linearRegression: linearRegressionReducer,
   practice: practiceReducer,
   leaderboard: leaderboardReducer,
   profile: profileReducer,
