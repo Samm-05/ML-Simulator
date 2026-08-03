@@ -6,6 +6,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
   fullWidth?: boolean;
 }
 
@@ -15,6 +16,7 @@ const Button: React.FC<ButtonProps> = ({
   size = 'md',
   isLoading = false,
   icon,
+  iconPosition = 'left',
   fullWidth = false,
   className = '',
   disabled,
@@ -63,8 +65,9 @@ const Button: React.FC<ButtonProps> = ({
         </svg>
       ) : (
         <>
-          {icon}
+          {iconPosition === 'left' && icon}
           {children}
+          {iconPosition === 'right' && icon}
         </>
       )}
     </motion.button>

@@ -31,7 +31,9 @@ const Sidebar: React.FC = () => {
 
   const mainNavItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/neural-network', icon: Brain, label: 'NN Lab' },
     { path: '/linear-regression', icon: Brain, label: 'Linear Lab' },
+    { path: '/logistic-regression', icon: Brain, label: 'Logistic Lab' },
     { path: '/gradient-descent', icon: Brain, label: 'Gradient Lab' },
     { path: '/simulator', icon: Brain, label: 'Simulator' },
     { path: '/practice', icon: Target, label: 'Practice' },

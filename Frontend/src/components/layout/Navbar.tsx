@@ -55,6 +55,13 @@ const Navbar: React.FC = () => {
                 Dashboard
               </Link>
               <Link
+                to="/neural-network"
+                className="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1 font-semibold"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
+                NN Lab
+              </Link>
+              <Link
                 to="/linear-regression"
                 className="text-sm font-medium text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1 font-semibold"
               >
@@ -62,10 +69,17 @@ const Navbar: React.FC = () => {
                 Linear Lab
               </Link>
               <Link
-                to="/gradient-descent"
+                to="/logistic-regression"
                 className="text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-1 font-semibold"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                Logistic Lab
+              </Link>
+              <Link
+                to="/gradient-descent"
+                className="text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1 font-semibold"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 GD Lab
               </Link>
               <Link

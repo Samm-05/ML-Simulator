@@ -9,6 +9,8 @@ import uiReducer from '../features/ui/uiSlice';
 
 import gradientDescentReducer from '../features/gradientDescent/gradientDescentSlice';
 import linearRegressionReducer from '../features/linearRegression/linearRegressionSlice';
+import logisticRegressionReducer from '../features/logisticRegression/logisticRegressionSlice';
+import neuralNetworkReducer from '../features/neuralNetwork/neuralNetworkSlice';
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +19,8 @@ export const store = configureStore({
     simulator: simulatorReducer,
     gradientDescent: gradientDescentReducer,
     linearRegression: linearRegressionReducer,
+    logisticRegression: logisticRegressionReducer,
+    neuralNetwork: neuralNetworkReducer,
     practice: practiceReducer,
     leaderboard: leaderboardReducer,
     profile: profileReducer,

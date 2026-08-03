@@ -9,6 +9,8 @@ import uiReducer from '../features/ui/uiSlice';
 
 import gradientDescentReducer from '../features/gradientDescent/gradientDescentSlice';
 import linearRegressionReducer from '../features/linearRegression/linearRegressionSlice';
+import logisticRegressionReducer from '../features/logisticRegression/logisticRegressionSlice';
+import neuralNetworkReducer from '../features/neuralNetwork/neuralNetworkSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -16,6 +18,8 @@ const rootReducer = combineReducers({
   simulator: simulatorReducer,
   gradientDescent: gradientDescentReducer,
   linearRegression: linearRegressionReducer,
+  logisticRegression: logisticRegressionReducer,
+  neuralNetwork: neuralNetworkReducer,
   practice: practiceReducer,
   leaderboard: leaderboardReducer,
   profile: profileReducer,

@@ -18,6 +18,8 @@ import ProfilePage from '../features/profile/ProfilePage';
 
 import GradientDescentLab from '../features/gradientDescent/GradientDescentLab';
 import LinearRegressionLab from '../features/linearRegression/LinearRegressionLab';
+import LogisticRegressionLab from '../features/logisticRegression/LogisticRegressionLab';
+import NeuralNetworkLab from '../features/neuralNetwork/NeuralNetworkLab';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -33,10 +35,15 @@ const AppRoutes: React.FC = () => {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/neural-network" element={<NeuralNetworkLab />} />
+          <Route path="/simulator/neural-network" element={<NeuralNetworkLab />} />
           <Route path="/linear-regression" element={<LinearRegressionLab />} />
           <Route path="/simulator/linear-regression" element={<LinearRegressionLab />} />
           <Route path="/gradient-descent" element={<GradientDescentLab />} />
           <Route path="/simulator/gradient-descent" element={<GradientDescentLab />} />
+          <Route path="/logistic-regression" element={<LogisticRegressionLab />} />
+          <Route path="/simulator/logistic-regression" element={<LogisticRegressionLab />} />
+          <Route path="/simulator/logistic" element={<LogisticRegressionLab />} />
           <Route path="/simulator" element={<Simulator />} />
           <Route path="/simulator/:algorithm" element={<Simulator />} />
           <Route path="/practice" element={<PracticePage />} />
