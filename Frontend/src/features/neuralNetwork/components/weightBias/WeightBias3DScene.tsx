@@ -1,6 +1,6 @@
-import React, { useRef, useState, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Html, Float, Sparkles } from '@react-three/drei';
+import React, { useState, useMemo } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Html, Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
 import { useAppSelector } from '../../../../app/hooks';
 
@@ -38,7 +38,7 @@ const Network3DGraph: React.FC<{
 
       for (let nIdx = 0; nIdx < count; nIdx++) {
         const y = (nIdx - (count - 1) / 2) * ySpacing;
-        const z = (Math.sin(lIdx + nIdx) * 0.3);
+        const z = Math.sin(lIdx + nIdx) * 0.3;
         layerCoords.push([x, y, z]);
       }
       coords.push(layerCoords);
@@ -55,9 +55,6 @@ const Network3DGraph: React.FC<{
         return layerCoords.map((pos, nIdx) => {
           const neuronData = layerData?.neurons[nIdx];
           const bias = neuronData?.bias ?? 0;
-          const a = neuronData?.a ?? 0.5;
-
-          // Color scale based on bias/activation
           const color = bias >= 0 ? '#10B981' : '#EF4444';
 
           return (
@@ -99,10 +96,7 @@ const Network3DGraph: React.FC<{
             const prevWeight = prevNeuronData?.weights[fromIdx] ?? weight;
             const deltaW = -config.learningRate * gradW;
 
-            // Visual Encodings:
-            // Color: Emerald for positive, Muted Red / Blue for negative
             const edgeColor = weight >= 0 ? '#10B981' : '#EF4444';
-            // Thickness: proportional to weight magnitude
             const lineWidth = Math.max(1, Math.min(8, Math.abs(weight) * 3.5));
 
             const midPoint: [number, number, number] = [
@@ -157,11 +151,10 @@ export const WeightBias3DScene: React.FC = () => {
   const [hoveredEdge, setHoveredEdge] = useState<HoveredEdgeInfo | null>(null);
 
   return (
-    <div className="w-full h-full relative rounded-2xl overflow-hidden bg-midnight border border-mountainside shadow-soft">
-      {/* Header Overlay */}
+    <div className="w-full h-full relative rounded-2xl overflow-hidden bg-midnight border border-mountainside shadow-soft min-h-[440px]">
       <div className="absolute top-3 left-3 z-10 px-3 py-1.5 rounded-xl bg-midnight/80 border border-mountainside backdrop-blur-md text-xs font-mono text-arctic flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-        <span>3D Weight & Bias Interactive Topology</span>
+        <span>3D Weight Dynamics Topology</span>
       </div>
 
       <Canvas camera={{ position: [0, 0, 8.5], fov: 48 }} gl={{ antialias: true, alpha: true }}>
@@ -174,15 +167,14 @@ export const WeightBias3DScene: React.FC = () => {
         <Sparkles count={40} scale={10} size={2} speed={0.3} color="#B3B7BA" opacity={0.4} />
         <OrbitControls enablePan enableRotate enableZoom />
 
-        {/* Floating Tooltip for Hovered Connection */}
         {hoveredEdge && (
           <Html position={hoveredEdge.position} center transform distanceFactor={10}>
             <div className="p-3 rounded-2xl bg-midnight/95 border border-slopes shadow-2xl backdrop-blur-xl font-mono text-xs text-arctic space-y-1.5 select-none min-w-[200px]">
               <div className="text-[10px] text-apres uppercase tracking-wider font-bold">
-                Layer {hoveredEdge.layerIdx} Connection (w_{hoveredEdge.fromNeuronIdx + 1}➔{hoveredEdge.toNeuronIdx + 1})
+                Layer {hoveredEdge.layerIdx} Weight (w_{hoveredEdge.fromNeuronIdx + 1}➔{hoveredEdge.toNeuronIdx + 1})
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slopes">Current Weight (w):</span>
+                <span className="text-slopes">Current Weight:</span>
                 <span className={`font-bold ${hoveredEdge.weight >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {hoveredEdge.weight.toFixed(4)}
                 </span>

@@ -20,6 +20,7 @@ import GradientDescentLab from '../features/gradientDescent/GradientDescentLab';
 import LinearRegressionLab from '../features/linearRegression/LinearRegressionLab';
 import LogisticRegressionLab from '../features/logisticRegression/LogisticRegressionLab';
 import NeuralNetworkLab from '../features/neuralNetwork/NeuralNetworkLab';
+import OverfittingLab from '../features/overfittingLab/OverfittingLab';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -44,6 +45,8 @@ const AppRoutes: React.FC = () => {
           <Route path="/logistic-regression" element={<LogisticRegressionLab />} />
           <Route path="/simulator/logistic-regression" element={<LogisticRegressionLab />} />
           <Route path="/simulator/logistic" element={<LogisticRegressionLab />} />
+          <Route path="/overfitting-lab" element={<OverfittingLab />} />
+          <Route path="/simulator/overfitting" element={<OverfittingLab />} />
           <Route path="/simulator" element={<Simulator />} />
           <Route path="/simulator/:algorithm" element={<Simulator />} />
           <Route path="/practice" element={<PracticePage />} />

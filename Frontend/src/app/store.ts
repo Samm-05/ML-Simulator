@@ -11,6 +11,7 @@ import gradientDescentReducer from '../features/gradientDescent/gradientDescentS
 import linearRegressionReducer from '../features/linearRegression/linearRegressionSlice';
 import logisticRegressionReducer from '../features/logisticRegression/logisticRegressionSlice';
 import neuralNetworkReducer from '../features/neuralNetwork/neuralNetworkSlice';
+import overfittingReducer from '../features/overfittingLab/overfittingSlice';
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
     linearRegression: linearRegressionReducer,
     logisticRegression: logisticRegressionReducer,
     neuralNetwork: neuralNetworkReducer,
+    overfitting: overfittingReducer,
     practice: practiceReducer,
     leaderboard: leaderboardReducer,
     profile: profileReducer,

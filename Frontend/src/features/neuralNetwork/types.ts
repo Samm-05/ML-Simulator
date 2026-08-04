@@ -57,7 +57,7 @@ export interface NNConfig {
   maxEpochs: number;
 }
 
-export type ViewMode = 'playground' | 'comparison' | 'gradient_flow' | 'weight_bias' | 'lesson' | 'quiz';
+export type ViewMode = 'playground' | 'comparison' | 'gradient_flow' | 'lesson' | 'quiz';
 
 export interface LessonStep {
   id: number;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAppSelector } from '../../../../app/hooks';
 import Card from '../../../../components/ui/Card';
-import { Grid, Sliders } from 'lucide-react';
+import { Grid } from 'lucide-react';
 
 export const WeightMatrixHeatmap: React.FC = () => {
   const { layerSizes, trajectory, currentEpoch, config } = useAppSelector(
@@ -57,7 +57,7 @@ export const WeightMatrixHeatmap: React.FC = () => {
       {/* Heatmap Grid */}
       <div className="relative overflow-x-auto scrollbar-hide py-2">
         <div className="min-w-[280px]">
-          {/* Header Row (From Neurons in L-1) */}
+          {/* Header Row */}
           <div className="flex items-center gap-1 mb-1.5 ml-12">
             {Array.from({ length: prevLayerSize }).map((_, fromIdx) => (
               <div key={`head_${fromIdx}`} className="flex-1 text-center font-mono text-[10px] text-apres">
@@ -66,11 +66,10 @@ export const WeightMatrixHeatmap: React.FC = () => {
             ))}
           </div>
 
-          {/* Matrix Rows (To Neurons in L) */}
+          {/* Matrix Rows */}
           <div className="space-y-1.5">
             {Array.from({ length: currentLayerSize }).map((_, toIdx) => {
               const neuronData = currentLayerData?.neurons[toIdx];
-              const prevNeuronData = prevLayerData?.neurons[toIdx];
 
               return (
                 <div key={`row_${toIdx}`} className="flex items-center gap-1">
@@ -79,11 +78,6 @@ export const WeightMatrixHeatmap: React.FC = () => {
                   </span>
                   {Array.from({ length: prevLayerSize }).map((_, fromIdx) => {
                     const weight = neuronData?.weights[fromIdx] ?? 0;
-                    const gradW = neuronData?.gradW[fromIdx] ?? 0;
-                    const prevWeight = prevNeuronData?.weights[fromIdx] ?? weight;
-                    const deltaW = -config.learningRate * gradW;
-
-                    // Heatmap Cell Intensity Color Scaling
                     const absVal = Math.min(1, Math.abs(weight));
                     const isPositive = weight >= 0;
                     const bgColor = isPositive

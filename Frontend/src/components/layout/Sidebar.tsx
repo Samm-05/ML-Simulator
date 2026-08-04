@@ -8,19 +8,14 @@ import {
   User,
   Settings,
   Search,
+  Activity,
+  Sliders,
 } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { toggleSidebar } from '../../features/ui/uiSlice';
 
 /**
  * ChatGPT-Style Collapsible Sidebar Component for ML Visual Lab
- * 
- * Behavior & Architecture:
- * 1. Default State: Starts COLLAPSED as a narrow 64px (w-16) icon rail.
- * 2. Logo Row Toggle: Clicking the top-left Logo row toggles expanded (240px / w-60) and collapsed states.
- * 3. Fixed Left Position: Anchored at `left-0`. Only width expands/contracts using CSS `transition-[width] duration-200 ease-out`.
- * 4. Staggered Text Fade-In: Text labels use delayed opacity transition (`delay-100`) when expanding so labels never appear squished mid-animation.
- * 5. Icon Stability: Icons stay perfectly fixed in horizontal position using a dedicated `w-10 h-10 flex items-center justify-center shrink-0` container.
  */
 const Sidebar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -32,9 +27,10 @@ const Sidebar: React.FC = () => {
   const mainNavItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/neural-network', icon: Brain, label: 'NN Lab' },
-    { path: '/linear-regression', icon: Brain, label: 'Linear Lab' },
-    { path: '/logistic-regression', icon: Brain, label: 'Logistic Lab' },
-    { path: '/gradient-descent', icon: Brain, label: 'Gradient Lab' },
+    { path: '/overfitting-lab', icon: Activity, label: 'Overfitting Lab' },
+    { path: '/linear-regression', icon: Sliders, label: 'Linear Lab' },
+    { path: '/logistic-regression', icon: Sliders, label: 'Logistic Lab' },
+    { path: '/gradient-descent', icon: Sliders, label: 'Gradient Lab' },
     { path: '/simulator', icon: Brain, label: 'Simulator' },
     { path: '/practice', icon: Target, label: 'Practice' },
     { path: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
@@ -56,23 +52,19 @@ const Sidebar: React.FC = () => {
       `}
     >
       <div className="h-full flex flex-col justify-between py-4 px-2 overflow-hidden">
-        
         {/* Top Container: Logo Toggle + Search + Main Navigation */}
         <div className="space-y-3">
-          
-          {/* 1. LOGO ROW (Acts as the main toggle button) */}
+          {/* LOGO ROW */}
           <button
             type="button"
             onClick={() => dispatch(toggleSidebar())}
             aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-mountainside/60 transition-colors duration-150 cursor-pointer focus:outline-none focus:ring-1 focus:ring-slopes group text-left"
           >
-            {/* Fixed Icon Position */}
             <div className="w-10 h-10 rounded-xl bg-mountainside border border-apres/40 text-arctic flex items-center justify-center shadow-soft shrink-0 group-hover:border-slopes transition-colors">
               <Brain className="w-5 h-5 text-slopes group-hover:text-arctic transition-colors" />
             </div>
 
-            {/* Wordmark Label with Staggered Fade-In */}
             <div
               className={`
                 flex flex-col whitespace-nowrap overflow-hidden
@@ -85,7 +77,7 @@ const Sidebar: React.FC = () => {
             </div>
           </button>
 
-          {/* 2. SEARCH ROW */}
+          {/* SEARCH ROW */}
           <button
             type="button"
             onClick={() => {
@@ -107,7 +99,7 @@ const Sidebar: React.FC = () => {
             </span>
           </button>
 
-          {/* 3. MAIN NAVIGATION */}
+          {/* MAIN NAVIGATION */}
           <nav className="space-y-1">
             {sidebarOpen && (
               <p className="px-3 text-[10px] font-mono uppercase tracking-widest text-apres mb-2 transition-opacity duration-150 delay-100">
@@ -127,12 +119,10 @@ const Sidebar: React.FC = () => {
                   }`
                 }
               >
-                {/* Fixed Icon Container */}
                 <div className="w-10 h-10 flex items-center justify-center shrink-0">
                   <item.icon className="w-5 h-5" />
                 </div>
 
-                {/* Text Label */}
                 <span
                   className={`
                     text-xs font-medium whitespace-nowrap overflow-hidden
@@ -147,7 +137,7 @@ const Sidebar: React.FC = () => {
           </nav>
         </div>
 
-        {/* Bottom Container: Divider + Account Preferences */}
+        {/* Account Preferences */}
         <div className="space-y-1 pt-2 border-t border-mountainside/80">
           {sidebarOpen && (
             <p className="px-3 text-[10px] font-mono uppercase tracking-widest text-apres mb-2 transition-opacity duration-150 delay-100">
@@ -167,12 +157,10 @@ const Sidebar: React.FC = () => {
                 }`
               }
             >
-              {/* Fixed Icon Container */}
               <div className="w-10 h-10 flex items-center justify-center shrink-0">
                 <item.icon className="w-5 h-5" />
               </div>
 
-              {/* Text Label */}
               <span
                 className={`
                   text-xs font-medium whitespace-nowrap overflow-hidden

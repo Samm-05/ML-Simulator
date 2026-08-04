@@ -13,7 +13,6 @@ import RightPanel from './components/RightPanel';
 import BottomPanel from './components/BottomPanel';
 import ComparisonView from './components/ComparisonView';
 import GradientFlowInspector from './components/GradientFlowInspector';
-import WeightBiasLab from './components/weightBias/WeightBiasLab';
 import QuizPanel from './components/QuizPanel';
 import PageContainer from '../../components/layout/PageContainer';
 import {
@@ -23,7 +22,6 @@ import {
   Eye,
   Activity,
   HelpCircle,
-  Scale,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -90,7 +88,6 @@ export const NeuralNetworkLab: React.FC = () => {
           {(
             [
               ['playground', 'Playground', Sliders],
-              ['weight_bias', 'Weight & Bias Lab', Scale],
               ['comparison', 'Model Compare', Eye],
               ['gradient_flow', 'Gradient Flow', Activity],
               ['quiz', 'Quiz', HelpCircle],
@@ -99,11 +96,10 @@ export const NeuralNetworkLab: React.FC = () => {
             <button
               key={mode}
               onClick={() => dispatch(setViewMode(mode))}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all whitespace-nowrap ${
-                viewMode === mode
+              className={`px-3 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all whitespace-nowrap ${viewMode === mode
                   ? 'bg-arctic text-midnight font-bold shadow-md'
                   : 'text-slopes hover:text-arctic'
-              }`}
+                }`}
             >
               <Icon className="w-3.5 h-3.5" />
               {label}
@@ -136,12 +132,6 @@ export const NeuralNetworkLab: React.FC = () => {
 
             {/* Bottom Controls & Analytics */}
             <BottomPanel />
-          </div>
-        )}
-
-        {viewMode === 'weight_bias' && (
-          <div className="w-full py-2">
-            <WeightBiasLab />
           </div>
         )}
 

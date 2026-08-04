@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useAppSelector } from '../../../../app/hooks';
 import Card from '../../../../components/ui/Card';
-import { Activity, Zap, AlertTriangle } from 'lucide-react';
+import { Activity, Zap } from 'lucide-react';
 
 export const GradientMagnitudeInspector: React.FC = () => {
   const { layerSizes, trajectory, currentEpoch } = useAppSelector(
@@ -31,7 +31,7 @@ export const GradientMagnitudeInspector: React.FC = () => {
     });
 
     const avgGrad = count > 0 ? totalGrad / count : 0;
-    return { layer: lIdx, avgGrad, maxGrad };
+    return { layer: lIdx, avgGrad, maxGrad: maxG };
   }).filter((item) => item.layer > 0);
 
   const maxOverall = Math.max(0.0001, ...layerGradients.map((item) => item.maxGrad));
@@ -44,7 +44,7 @@ export const GradientMagnitudeInspector: React.FC = () => {
             <Activity className="w-4 h-4 text-slopes" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-arctic tracking-tight">Layer Gradient Learning Speeds (||∂L/∂W^{[l]}||)</h3>
+            <h3 className="text-sm font-bold text-arctic tracking-tight">Layer Gradient Learning Speeds (||∂L/∂W||)</h3>
             <p className="text-[10px] font-mono text-apres">Which parameters learn faster during backpropagation</p>
           </div>
         </div>
