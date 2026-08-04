@@ -1,87 +1,118 @@
-import React, { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Layers, TrendingUp, GitBranch, PieChart, Activity } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
+import React, { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Sparkles, Layers, TrendingUp, GitBranch, PieChart, Activity, CheckCircle2 } from 'lucide-react';
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
 
 interface StoryStep {
   id: string;
   title: string;
   subtitle: string;
   icon: React.FC<{ className?: string }>;
-  math: string;
+  mathLatex: string;
   description: string;
   gradient: string;
+  accentHex: string;
   visualSnippet: React.FC;
 }
+
+const MathFormula: React.FC<{ latex: string }> = ({ latex }) => {
+  const containerRef = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (containerRef.current) {
+      katex.render(latex, containerRef.current, { throwOnError: false });
+    }
+  }, [latex]);
+  return <span ref={containerRef} className="font-mono text-cyan-300" />;
+};
 
 const storySteps: StoryStep[] = [
   {
     id: 'gradient-descent',
-    title: '1. Gradient Descent',
-    subtitle: 'Navigating Loss Surfacess',
+    title: '1. Gradient Descent Optimization',
+    subtitle: 'Navigating Loss Surfaces',
     icon: TrendingUp,
-    math: 'w_t+1 = w_t - α ∇J(w_t)',
-    description: 'Calculates the negative gradient vector at the current parameter coordinates and steps iteratively down the loss basin.',
-    gradient: 'from-indigo-500 to-purple-600',
+    mathLatex: 'w_{t+1} = w_t - \\alpha \\nabla J(w_t)',
+    description: 'Calculates the negative gradient vector at current parameter coordinates and steps iteratively down the loss basin to find global cost minima.',
+    gradient: 'from-cyan-500 to-blue-600',
+    accentHex: '#06B6D4',
     visualSnippet: () => (
-      <div className="w-full h-48 rounded-2xl bg-secondary-950 p-4 border border-secondary-800 flex flex-col justify-center items-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500/10 via-transparent to-transparent" />
-        <svg className="w-full h-32" viewBox="0 0 300 120">
-          <path d="M 20 20 Q 150 120 280 20" stroke="#6366f1" strokeWidth="3" fill="none" />
-          <circle cx="90" cy="72" r="8" fill="#14b8a6" className="animate-pulse" />
-          <line x1="90" y1="72" x2="130" y2="92" stroke="#38bdf8" strokeWidth="2" strokeDasharray="3 3" />
+      <div className="w-full h-56 rounded-2xl bg-midnight/95 p-4 border border-mountainside/80 flex flex-col justify-between items-center relative overflow-hidden shadow-inner select-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
+        <svg className="w-full h-36" viewBox="0 0 300 130">
+          <path d="M 20 20 Q 150 130 280 20" stroke="#06B6D4" strokeWidth="3" fill="none" strokeDasharray="4 2" />
+          <path d="M 30 30 Q 150 120 270 30" stroke="rgba(6, 182, 212, 0.4)" strokeWidth="1.5" fill="none" />
+          <circle cx="45" cy="38" r="4" fill="#64748b" />
+          <circle cx="75" cy="62" r="5" fill="#38bdf8" />
+          <circle cx="115" cy="85" r="6" fill="#06B6D4" />
+          <circle cx="150" cy="92" r="8" fill="#10B981" className="animate-ping opacity-75" />
+          <circle cx="150" cy="92" r="7" fill="#10B981" />
+          <line x1="115" y1="85" x2="145" y2="92" stroke="#10B981" strokeWidth="2.5" />
         </svg>
-        <span className="text-[10px] font-mono text-secondary-400 mt-2">Loss Minimization Trajectory</span>
+        <div className="flex items-center gap-2 text-[11px] font-mono text-slopes bg-midnight/80 px-3 py-1 rounded-lg border border-mountainside">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Convergence Path: η = 0.05 • Loss J(w) → 0.001</span>
+        </div>
       </div>
     ),
   },
   {
     id: 'decision-boundary',
-    title: '2. Decision Boundaries',
+    title: '2. Logistic Decision Boundaries',
     subtitle: 'Hyperplane Class Separation',
     icon: Activity,
-    math: 'w₁x₁ + w₂x₂ + b = 0',
-    description: 'Finds an optimal linear or non-linear hyperplane boundary that separates feature data into discrete target classes.',
-    gradient: 'from-teal-400 to-emerald-600',
+    mathLatex: 'w_1 x_1 + w_2 x_2 + b = 0',
+    description: 'Finds an optimal linear or non-linear hyperplane boundary that separates feature data into discrete target classification decision regions.',
+    gradient: 'from-purple-500 to-indigo-600',
+    accentHex: '#8B5CF6',
     visualSnippet: () => (
-      <div className="w-full h-48 rounded-2xl bg-secondary-950 p-4 border border-secondary-800 flex flex-col justify-center items-center relative overflow-hidden">
-        <svg className="w-full h-32" viewBox="0 0 300 120">
-          {/* Blue Class Points */}
-          <circle cx="60" cy="40" r="5" fill="#38bdf8" />
-          <circle cx="80" cy="30" r="5" fill="#38bdf8" />
-          <circle cx="100" cy="60" r="5" fill="#38bdf8" />
-          {/* Red Class Points */}
-          <circle cx="180" cy="80" r="5" fill="#ef4444" />
-          <circle cx="200" cy="95" r="5" fill="#ef4444" />
-          <circle cx="230" cy="70" r="5" fill="#ef4444" />
-          {/* Decision Boundary Line */}
-          <line x1="40" y1="100" x2="260" y2="20" stroke="#14b8a6" strokeWidth="3" />
+      <div className="w-full h-56 rounded-2xl bg-midnight/95 p-4 border border-mountainside/80 flex flex-col justify-between items-center relative overflow-hidden shadow-inner select-none">
+        <svg className="w-full h-36" viewBox="0 0 300 130">
+          <circle cx="50" cy="35" r="5" fill="#38bdf8" />
+          <circle cx="75" cy="25" r="5" fill="#38bdf8" />
+          <circle cx="95" cy="55" r="5" fill="#38bdf8" />
+          <circle cx="110" cy="30" r="5" fill="#38bdf8" />
+          <circle cx="170" cy="85" r="5" fill="#f43f5e" />
+          <circle cx="195" cy="105" r="5" fill="#f43f5e" />
+          <circle cx="225" cy="75" r="5" fill="#f43f5e" />
+          <circle cx="245" cy="95" r="5" fill="#f43f5e" />
+          <line x1="30" y1="110" x2="270" y2="15" stroke="#a855f7" strokeWidth="3" />
+          <line x1="30" y1="110" x2="270" y2="15" stroke="#a855f7" strokeWidth="8" strokeOpacity="0.2" />
         </svg>
-        <span className="text-[10px] font-mono text-secondary-400 mt-2">Binary Hyperplane Separation</span>
+        <div className="flex items-center gap-2 text-[11px] font-mono text-slopes bg-midnight/80 px-3 py-1 rounded-lg border border-mountainside">
+          <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+          <span>Sigmoid Margin Confidence: P(y=1|x) = 99.4%</span>
+        </div>
       </div>
     ),
   },
   {
     id: 'clusters',
-    title: '3. Spatial Clustering',
+    title: '3. Spatial Clustering (K-Means)',
     subtitle: 'Centroid Voronoi Tesselation',
     icon: Layers,
-    math: 'min ∑ ||x_i - μ_k||²',
-    description: 'Groups unlabeled data points around dynamic centroid anchors by minimizing within-cluster distance metrics.',
-    gradient: 'from-amber-400 to-orange-600',
+    mathLatex: '\\min \\sum_{k=1}^K \\sum_{x \\in S_k} ||x - \\mu_k||^2',
+    description: 'Groups unlabeled data points around dynamic centroid anchors by iteratively updating mean cluster coordinates.',
+    gradient: 'from-teal-400 to-emerald-600',
+    accentHex: '#10B981',
     visualSnippet: () => (
-      <div className="w-full h-48 rounded-2xl bg-secondary-950 p-4 border border-secondary-800 flex flex-col justify-center items-center relative overflow-hidden">
-        <svg className="w-full h-32" viewBox="0 0 300 120">
-          <circle cx="80" cy="50" r="22" fill="#6366f1" fillOpacity="0.15" stroke="#6366f1" strokeDasharray="2 2" />
-          <circle cx="80" cy="50" r="4" fill="#6366f1" />
-
-          <circle cx="210" cy="70" r="28" fill="#14b8a6" fillOpacity="0.15" stroke="#14b8a6" strokeDasharray="2 2" />
-          <circle cx="210" cy="70" r="4" fill="#14b8a6" />
+      <div className="w-full h-56 rounded-2xl bg-midnight/95 p-4 border border-mountainside/80 flex flex-col justify-between items-center relative overflow-hidden shadow-inner select-none">
+        <svg className="w-full h-36" viewBox="0 0 300 130">
+          <circle cx="85" cy="55" r="28" fill="#10b981" fillOpacity="0.12" stroke="#10b981" strokeDasharray="3 3" />
+          <circle cx="85" cy="55" r="5" fill="#10b981" />
+          <circle cx="65" cy="45" r="3.5" fill="#34d399" />
+          <circle cx="100" cy="40" r="3.5" fill="#34d399" />
+          <circle cx="95" cy="70" r="3.5" fill="#34d399" />
+          <circle cx="215" cy="70" r="32" fill="#38bdf8" fillOpacity="0.12" stroke="#38bdf8" strokeDasharray="3 3" />
+          <circle cx="215" cy="70" r="5" fill="#38bdf8" />
+          <circle cx="195" cy="55" r="3.5" fill="#60a5fa" />
+          <circle cx="235" cy="85" r="3.5" fill="#60a5fa" />
+          <circle cx="220" cy="50" r="3.5" fill="#60a5fa" />
         </svg>
-        <span className="text-[10px] font-mono text-secondary-400 mt-2">Iterative Centroid Convergence</span>
+        <div className="flex items-center gap-2 text-[11px] font-mono text-slopes bg-midnight/80 px-3 py-1 rounded-lg border border-mountainside">
+          <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+          <span>Iterative Centroid Update: K = 2 Clusters</span>
+        </div>
       </div>
     ),
   },
@@ -90,19 +121,27 @@ const storySteps: StoryStep[] = [
     title: '4. Decision Tree Splitting',
     subtitle: 'Recursive Information Gain',
     icon: GitBranch,
-    math: 'Gain = H(Parent) - ∑ pᵢ H(Child)',
+    mathLatex: '\\text{Gain}(S, A) = H(S) - \\sum_{v \\in \\text{Values}(A)} \\frac{|S_v|}{|S|} H(S_v)',
     description: 'Recursively partitions dataset based on maximum information gain or Gini impurity reduction thresholds.',
-    gradient: 'from-purple-500 to-pink-600',
+    gradient: 'from-amber-400 to-orange-600',
+    accentHex: '#F59E0B',
     visualSnippet: () => (
-      <div className="w-full h-48 rounded-2xl bg-secondary-950 p-4 border border-secondary-800 flex flex-col justify-center items-center relative overflow-hidden">
-        <svg className="w-full h-32" viewBox="0 0 300 120">
-          <circle cx="150" cy="25" r="8" fill="#a855f7" />
-          <line x1="150" y1="25" x2="90" y2="65" stroke="#64748b" strokeWidth="2" />
-          <line x1="150" y1="25" x2="210" y2="65" stroke="#64748b" strokeWidth="2" />
-          <circle cx="90" cy="65" r="7" fill="#38bdf8" />
-          <circle cx="210" cy="65" r="7" fill="#38bdf8" />
+      <div className="w-full h-56 rounded-2xl bg-midnight/95 p-4 border border-mountainside/80 flex flex-col justify-between items-center relative overflow-hidden shadow-inner select-none">
+        <svg className="w-full h-36" viewBox="0 0 300 130">
+          <line x1="150" y1="25" x2="85" y2="65" stroke="#f59e0b" strokeWidth="2" />
+          <line x1="150" y1="25" x2="215" y2="65" stroke="#f59e0b" strokeWidth="2" />
+          <line x1="85" y1="65" x2="50" y2="105" stroke="#64748b" strokeWidth="1.5" />
+          <line x1="85" y1="65" x2="115" y2="105" stroke="#64748b" strokeWidth="1.5" />
+          <circle cx="150" cy="25" r="7" fill="#f59e0b" />
+          <circle cx="85" cy="65" r="6" fill="#fbbf24" />
+          <circle cx="215" cy="65" r="6" fill="#fbbf24" />
+          <circle cx="50" cy="105" r="4.5" fill="#10b981" />
+          <circle cx="115" cy="105" r="4.5" fill="#ef4444" />
         </svg>
-        <span className="text-[10px] font-mono text-secondary-400 mt-2">Hierarchical Decision Hierarchy</span>
+        <div className="flex items-center gap-2 text-[11px] font-mono text-slopes bg-midnight/80 px-3 py-1 rounded-lg border border-mountainside">
+          <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+          <span>Max Information Gain: ΔH = 0.42 Bits</span>
+        </div>
       </div>
     ),
   },
@@ -111,132 +150,107 @@ const storySteps: StoryStep[] = [
     title: '5. PCA Dimensionality Reduction',
     subtitle: 'Principal Axis Variance Alignment',
     icon: PieChart,
-    math: 'Σ v = λ v',
-    description: 'Identifies orthogonal directions of maximum variance to compress high-dimensional feature spaces.',
+    mathLatex: '\\Sigma v_i = \\lambda_i v_i',
+    description: 'Identifies orthogonal directions of maximum variance to compress high-dimensional feature spaces into lower dimensions.',
     gradient: 'from-sky-400 to-blue-600',
+    accentHex: '#38BDF8',
     visualSnippet: () => (
-      <div className="w-full h-48 rounded-2xl bg-secondary-950 p-4 border border-secondary-800 flex flex-col justify-center items-center relative overflow-hidden">
-        <svg className="w-full h-32" viewBox="0 0 300 120">
-          <line x1="50" y1="100" x2="250" y2="20" stroke="#38bdf8" strokeWidth="3" />
-          <line x1="90" y1="20" x2="210" y2="100" stroke="#64748b" strokeWidth="1.5" strokeDasharray="3 3" />
+      <div className="w-full h-56 rounded-2xl bg-midnight/95 p-4 border border-mountainside/80 flex flex-col justify-between items-center relative overflow-hidden shadow-inner select-none">
+        <svg className="w-full h-36" viewBox="0 0 300 130">
+          <line x1="40" y1="110" x2="260" y2="20" stroke="#38bdf8" strokeWidth="3" />
+          <line x1="110" y1="25" x2="190" y2="105" stroke="#64748b" strokeWidth="1.5" strokeDasharray="3 3" />
+          <circle cx="75" cy="95" r="4" fill="#38bdf8" />
+          <circle cx="120" cy="77" r="4" fill="#38bdf8" />
+          <circle cx="180" cy="52" r="4" fill="#38bdf8" />
+          <circle cx="225" cy="34" r="4" fill="#38bdf8" />
         </svg>
-        <span className="text-[10px] font-mono text-secondary-400 mt-2">Eigenvector Projection Vectors</span>
+        <div className="flex items-center gap-2 text-[11px] font-mono text-slopes bg-midnight/80 px-3 py-1 rounded-lg border border-mountainside">
+          <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+          <span>Explained Variance Ratio: PC1 = 88.2%</span>
+        </div>
       </div>
     ),
   },
 ];
 
 export const ScrollStorySection: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [activeStepIndex, setActiveStepIndex] = useState(0);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const ctx = gsap.context(() => {
-      storySteps.forEach((step, index) => {
-        ScrollTrigger.create({
-          trigger: `#story-card-${index}`,
-          start: 'top 60%',
-          end: 'bottom 40%',
-          onEnter: () => setActiveStepIndex(index),
-          onEnterBack: () => setActiveStepIndex(index),
-        });
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const activeStep = storySteps[activeStepIndex];
-
   return (
-    <section ref={containerRef} className="py-24 bg-secondary-950 text-white relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <span className="text-xs font-semibold tracking-widest uppercase text-accent-400">
-            Scroll Driven Storytelling
+    <section className="py-24 bg-midnight text-arctic relative overflow-hidden">
+      {/* Radial Background Accent */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[30rem] rounded-full bg-mountainside/20 blur-[150px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-xs font-mono font-bold tracking-widest uppercase text-slopes">
+            Visual Storytelling
           </span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mt-2">
+          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-arctic mt-2">
             Watch How Algorithms Think
           </h2>
-          <p className="mt-4 text-secondary-300 text-base sm:text-lg">
-            As you scroll, explore how raw mathematics converts into visual geometric updates.
+          <p className="mt-4 text-apres text-base sm:text-lg font-sans">
+            Explore how raw mathematical equations convert into real-time geometric visual updates.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-12 items-start">
-          {/* Scrollable Story Cards Column */}
-          <div className="lg:col-span-6 space-y-16">
-            {storySteps.map((step, index) => {
-              const Icon = step.icon;
-              const isActive = activeStepIndex === index;
+        {/* Full-Width Balanced Feature Showcase Stack (0 Empty Whitespace!) */}
+        <div className="space-y-8">
+          {storySteps.map((step, index) => {
+            const Icon = step.icon;
 
-              return (
-                <div
-                  key={step.id}
-                  id={`story-card-${index}`}
-                  className={`p-8 rounded-3xl border transition-all duration-500 ${
-                    isActive
-                      ? 'bg-secondary-900 border-primary-500/80 shadow-[0_0_30px_rgba(99,102,241,0.2)]'
-                      : 'bg-secondary-900/40 border-secondary-800 opacity-60'
-                  }`}
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className={`p-3 rounded-2xl bg-gradient-to-br ${step.gradient} text-white`}>
+            return (
+              <motion.div
+                key={step.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="p-6 sm:p-8 rounded-3xl bg-mountainside/40 border border-mountainside/80 backdrop-blur-xl shadow-hard grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative overflow-hidden group hover:border-slopes/60 transition-all"
+              >
+                {/* Top Border Accent */}
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${step.gradient} opacity-80 group-hover:opacity-100 transition-opacity`} />
+
+                {/* Left Column: Text, Category & Formula (7 Cols) */}
+                <div className="lg:col-span-7 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-3.5 rounded-2xl bg-gradient-to-br ${step.gradient} text-white shadow-md shrink-0`}>
                       <Icon className="w-6 h-6" />
                     </div>
                     <div>
-                      <span className="text-xs font-mono text-secondary-400 uppercase tracking-widest">
+                      <span className="text-xs font-mono text-slopes uppercase tracking-widest block">
                         {step.subtitle}
                       </span>
-                      <h3 className="text-2xl font-bold text-white">{step.title}</h3>
+                      <h3 className="text-2xl sm:text-3xl font-extrabold text-arctic">{step.title}</h3>
                     </div>
                   </div>
 
-                  <p className="text-secondary-300 text-base leading-relaxed mb-6">
+                  <p className="text-apres text-sm sm:text-base leading-relaxed font-sans max-w-2xl">
                     {step.description}
                   </p>
 
-                  <div className="p-4 rounded-xl bg-secondary-950 border border-secondary-800 font-mono text-sm text-primary-300">
-                    {step.math}
+                  <div className="p-3.5 rounded-2xl bg-midnight border border-mountainside/90 text-sm inline-block overflow-x-auto scrollbar-hide">
+                    <span className="text-xs font-mono text-apres uppercase tracking-wider block mb-1">
+                      Mathematical Engine:
+                    </span>
+                    <MathFormula latex={step.mathLatex} />
                   </div>
                 </div>
-              );
-            })}
-          </div>
 
-          {/* Sticky Visual Preview Column */}
-          <div className="lg:col-span-6 sticky top-28">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeStep.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-                className="p-8 rounded-3xl bg-secondary-900 border border-secondary-800 shadow-2xl backdrop-blur-xl relative overflow-hidden"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-accent-400" />
-                    <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
-                      Live Concept Geometry
+                {/* Right Column: Embedded Live Concept Geometry Viewport (5 Cols) */}
+                <div className="lg:col-span-5 w-full">
+                  <div className="flex items-center justify-between mb-2 px-1">
+                    <span className="text-[11px] font-mono font-bold text-slopes uppercase tracking-wider flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> Live Geometry Engine
+                    </span>
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-midnight text-slopes border border-mountainside">
+                      Module 0{index + 1} / 05
                     </span>
                   </div>
-                  <span className="text-xs font-mono px-3 py-1 rounded-full bg-secondary-800 text-secondary-300">
-                    Module 0{activeStepIndex + 1} / 05
-                  </span>
+                  <step.visualSnippet />
                 </div>
-
-                <h4 className="text-xl font-bold text-white mb-2">{activeStep.title}</h4>
-                <p className="text-xs text-secondary-400 mb-6">{activeStep.subtitle}</p>
-
-                {/* Render Mini Visual Canvas */}
-                <activeStep.visualSnippet />
               </motion.div>
-            </AnimatePresence>
-          </div>
+            );
+          })}
         </div>
       </div>
     </section>
