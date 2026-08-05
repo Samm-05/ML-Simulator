@@ -11,6 +11,7 @@ import ForgotPassword from '../features/auth/ForgotPassword';
 
 // Main Pages
 import Dashboard from '../features/dashboard/Dashboard';
+import PlaygroundLayout from '../features/playground/PlaygroundLayout';
 import PracticePage from '../features/practice/PracticePage';
 import LeaderboardPage from '../features/leaderboard/LeaderboardPage';
 import ProfilePage from '../features/profile/ProfilePage';
@@ -35,20 +36,32 @@ const AppRoutes: React.FC = () => {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/neural-network" element={<NeuralNetworkLab />} />
-          <Route path="/linear-regression" element={<LinearRegressionLab />} />
-          <Route path="/gradient-descent" element={<GradientDescentLab />} />
-          <Route path="/logistic-regression" element={<LogisticRegressionLab />} />
-          <Route path="/overfitting-lab" element={<OverfittingLab />} />
 
-          {/* Legacy Redirects */}
-          <Route path="/simulator/neural-network" element={<Navigate to="/neural-network" replace />} />
-          <Route path="/simulator/linear-regression" element={<Navigate to="/linear-regression" replace />} />
-          <Route path="/simulator/gradient-descent" element={<Navigate to="/gradient-descent" replace />} />
-          <Route path="/simulator/logistic-regression" element={<Navigate to="/logistic-regression" replace />} />
-          <Route path="/simulator/logistic" element={<Navigate to="/logistic-regression" replace />} />
-          <Route path="/simulator/overfitting" element={<Navigate to="/overfitting-lab" replace />} />
-          <Route path="/simulator/*" element={<Navigate to="/dashboard" replace />} />
+          {/* Playground Module & Nested Labs */}
+          <Route path="/playground" element={<PlaygroundLayout />}>
+            <Route index element={<Navigate to="/playground/nn-lab" replace />} />
+            <Route path="nn-lab" element={<NeuralNetworkLab />} />
+            <Route path="linear-lab" element={<LinearRegressionLab />} />
+            <Route path="logistic-lab" element={<LogisticRegressionLab />} />
+            <Route path="gd-lab" element={<GradientDescentLab />} />
+            <Route path="overfitting-lab" element={<OverfittingLab />} />
+          </Route>
+
+          {/* Redirect Direct Lab Routes to Playground */}
+          <Route path="/neural-network" element={<Navigate to="/playground/nn-lab" replace />} />
+          <Route path="/linear-regression" element={<Navigate to="/playground/linear-lab" replace />} />
+          <Route path="/logistic-regression" element={<Navigate to="/playground/logistic-lab" replace />} />
+          <Route path="/gradient-descent" element={<Navigate to="/playground/gd-lab" replace />} />
+          <Route path="/overfitting-lab" element={<Navigate to="/playground/overfitting-lab" replace />} />
+
+          {/* Legacy Simulator Redirects */}
+          <Route path="/simulator/neural-network" element={<Navigate to="/playground/nn-lab" replace />} />
+          <Route path="/simulator/linear-regression" element={<Navigate to="/playground/linear-lab" replace />} />
+          <Route path="/simulator/gradient-descent" element={<Navigate to="/playground/gd-lab" replace />} />
+          <Route path="/simulator/logistic-regression" element={<Navigate to="/playground/logistic-lab" replace />} />
+          <Route path="/simulator/logistic" element={<Navigate to="/playground/logistic-lab" replace />} />
+          <Route path="/simulator/overfitting" element={<Navigate to="/playground/overfitting-lab" replace />} />
+          <Route path="/simulator/*" element={<Navigate to="/playground" replace />} />
 
           <Route path="/practice" element={<PracticePage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />

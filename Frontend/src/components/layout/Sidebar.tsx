@@ -2,14 +2,13 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
+  FlaskConical,
   Brain,
   Target,
   Trophy,
   User,
   Settings,
   Search,
-  Activity,
-  Sliders,
 } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { toggleSidebar } from '../../features/ui/uiSlice';
@@ -26,11 +25,7 @@ const Sidebar: React.FC = () => {
 
   const mainNavItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/neural-network', icon: Brain, label: 'NN Lab' },
-    { path: '/overfitting-lab', icon: Activity, label: 'Overfitting Lab' },
-    { path: '/linear-regression', icon: Sliders, label: 'Linear Lab' },
-    { path: '/logistic-regression', icon: Sliders, label: 'Logistic Lab' },
-    { path: '/gradient-descent', icon: Sliders, label: 'Gradient Lab' },
+    { path: '/playground', icon: FlaskConical, label: 'Playground' },
     { path: '/practice', icon: Target, label: 'Practice' },
     { path: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
   ];

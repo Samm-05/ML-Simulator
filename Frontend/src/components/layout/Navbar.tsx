@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Menu, X, Brain, Bell, User, LogOut, Settings } from 'lucide-react';
+import { Menu, X, Brain, Bell, User, LogOut, Settings, FlaskConical } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { logout } from '../../features/auth/authSlice';
 
@@ -48,52 +48,47 @@ const Navbar: React.FC = () => {
           {/* Desktop Navigation */}
           {isAuthenticated && (
             <div className="hidden md:flex items-center space-x-8">
-              <Link
+              <NavLink
                 to="/dashboard"
-                className="text-sm font-medium text-slopes hover:text-arctic transition-colors"
+                className={({ isActive }) =>
+                  `text-sm font-medium transition-colors ${
+                    isActive ? 'text-arctic font-bold' : 'text-slopes hover:text-arctic'
+                  }`
+                }
               >
                 Dashboard
-              </Link>
-              <Link
-                to="/neural-network"
-                className="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1 font-semibold"
+              </NavLink>
+              <NavLink
+                to="/playground"
+                className={({ isActive }) =>
+                  `text-sm font-medium transition-colors flex items-center gap-1.5 font-semibold ${
+                    isActive ? 'text-emerald-400 font-bold' : 'text-slopes hover:text-arctic'
+                  }`
+                }
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
-                NN Lab
-              </Link>
-              <Link
-                to="/linear-regression"
-                className="text-sm font-medium text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1 font-semibold"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                Linear Lab
-              </Link>
-              <Link
-                to="/logistic-regression"
-                className="text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-1 font-semibold"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                Logistic Lab
-              </Link>
-              <Link
-                to="/gradient-descent"
-                className="text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1 font-semibold"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                GD Lab
-              </Link>
-              <Link
+                <FlaskConical className="w-4 h-4 text-emerald-400" />
+                Playground
+              </NavLink>
+              <NavLink
                 to="/practice"
-                className="text-sm font-medium text-slopes hover:text-arctic transition-colors"
+                className={({ isActive }) =>
+                  `text-sm font-medium transition-colors ${
+                    isActive ? 'text-arctic font-bold' : 'text-slopes hover:text-arctic'
+                  }`
+                }
               >
                 Practice
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/leaderboard"
-                className="text-sm font-medium text-slopes hover:text-arctic transition-colors"
+                className={({ isActive }) =>
+                  `text-sm font-medium transition-colors ${
+                    isActive ? 'text-arctic font-bold' : 'text-slopes hover:text-arctic'
+                  }`
+                }
               >
                 Leaderboard
-              </Link>
+              </NavLink>
             </div>
           )}
 
@@ -194,6 +189,14 @@ const Navbar: React.FC = () => {
             onClick={() => setIsOpen(false)}
           >
             Dashboard
+          </Link>
+          <Link
+            to="/playground"
+            className="block px-4 py-3 rounded-xl text-sm font-medium text-emerald-400 hover:text-emerald-300 hover:bg-mountainside/60 transition-colors flex items-center gap-2 font-semibold"
+            onClick={() => setIsOpen(false)}
+          >
+            <FlaskConical className="w-4 h-4" />
+            Playground
           </Link>
           <Link
             to="/practice"
