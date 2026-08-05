@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Layers, TrendingUp, GitBranch, PieChart, Activity, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Layers, TrendingUp, GitBranch, PieChart, Activity } from 'lucide-react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -12,7 +12,6 @@ interface StoryStep {
   mathLatex: string;
   description: string;
   gradient: string;
-  accentHex: string;
   visualSnippet: React.FC;
 }
 
@@ -35,7 +34,6 @@ const storySteps: StoryStep[] = [
     mathLatex: 'w_{t+1} = w_t - \\alpha \\nabla J(w_t)',
     description: 'Calculates the negative gradient vector at current parameter coordinates and steps iteratively down the loss basin to find global cost minima.',
     gradient: 'from-cyan-500 to-blue-600',
-    accentHex: '#06B6D4',
     visualSnippet: () => (
       <div className="w-full h-56 rounded-2xl bg-midnight/95 p-4 border border-mountainside/80 flex flex-col justify-between items-center relative overflow-hidden shadow-inner select-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
@@ -64,7 +62,6 @@ const storySteps: StoryStep[] = [
     mathLatex: 'w_1 x_1 + w_2 x_2 + b = 0',
     description: 'Finds an optimal linear or non-linear hyperplane boundary that separates feature data into discrete target classification decision regions.',
     gradient: 'from-purple-500 to-indigo-600',
-    accentHex: '#8B5CF6',
     visualSnippet: () => (
       <div className="w-full h-56 rounded-2xl bg-midnight/95 p-4 border border-mountainside/80 flex flex-col justify-between items-center relative overflow-hidden shadow-inner select-none">
         <svg className="w-full h-36" viewBox="0 0 300 130">
@@ -94,7 +91,6 @@ const storySteps: StoryStep[] = [
     mathLatex: '\\min \\sum_{k=1}^K \\sum_{x \\in S_k} ||x - \\mu_k||^2',
     description: 'Groups unlabeled data points around dynamic centroid anchors by iteratively updating mean cluster coordinates.',
     gradient: 'from-teal-400 to-emerald-600',
-    accentHex: '#10B981',
     visualSnippet: () => (
       <div className="w-full h-56 rounded-2xl bg-midnight/95 p-4 border border-mountainside/80 flex flex-col justify-between items-center relative overflow-hidden shadow-inner select-none">
         <svg className="w-full h-36" viewBox="0 0 300 130">
@@ -124,7 +120,6 @@ const storySteps: StoryStep[] = [
     mathLatex: '\\text{Gain}(S, A) = H(S) - \\sum_{v \\in \\text{Values}(A)} \\frac{|S_v|}{|S|} H(S_v)',
     description: 'Recursively partitions dataset based on maximum information gain or Gini impurity reduction thresholds.',
     gradient: 'from-amber-400 to-orange-600',
-    accentHex: '#F59E0B',
     visualSnippet: () => (
       <div className="w-full h-56 rounded-2xl bg-midnight/95 p-4 border border-mountainside/80 flex flex-col justify-between items-center relative overflow-hidden shadow-inner select-none">
         <svg className="w-full h-36" viewBox="0 0 300 130">
@@ -153,7 +148,6 @@ const storySteps: StoryStep[] = [
     mathLatex: '\\Sigma v_i = \\lambda_i v_i',
     description: 'Identifies orthogonal directions of maximum variance to compress high-dimensional feature spaces into lower dimensions.',
     gradient: 'from-sky-400 to-blue-600',
-    accentHex: '#38BDF8',
     visualSnippet: () => (
       <div className="w-full h-56 rounded-2xl bg-midnight/95 p-4 border border-mountainside/80 flex flex-col justify-between items-center relative overflow-hidden shadow-inner select-none">
         <svg className="w-full h-36" viewBox="0 0 300 130">
@@ -176,11 +170,7 @@ const storySteps: StoryStep[] = [
 export const ScrollStorySection: React.FC = () => {
   return (
     <section className="py-24 bg-midnight text-arctic relative overflow-hidden">
-      {/* Radial Background Accent */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[30rem] rounded-full bg-mountainside/20 blur-[150px] pointer-events-none" />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="text-xs font-mono font-bold tracking-widest uppercase text-slopes">
             Visual Storytelling
@@ -193,7 +183,6 @@ export const ScrollStorySection: React.FC = () => {
           </p>
         </div>
 
-        {/* Full-Width Balanced Feature Showcase Stack (0 Empty Whitespace!) */}
         <div className="space-y-8">
           {storySteps.map((step, index) => {
             const Icon = step.icon;
@@ -203,14 +192,12 @@ export const ScrollStorySection: React.FC = () => {
                 key={step.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
                 className="p-6 sm:p-8 rounded-3xl bg-mountainside/40 border border-mountainside/80 backdrop-blur-xl shadow-hard grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative overflow-hidden group hover:border-slopes/60 transition-all"
               >
-                {/* Top Border Accent */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${step.gradient} opacity-80 group-hover:opacity-100 transition-opacity`} />
 
-                {/* Left Column: Text, Category & Formula (7 Cols) */}
                 <div className="lg:col-span-7 space-y-4">
                   <div className="flex items-center gap-3">
                     <div className={`p-3.5 rounded-2xl bg-gradient-to-br ${step.gradient} text-white shadow-md shrink-0`}>
@@ -236,7 +223,6 @@ export const ScrollStorySection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Right Column: Embedded Live Concept Geometry Viewport (5 Cols) */}
                 <div className="lg:col-span-5 w-full">
                   <div className="flex items-center justify-between mb-2 px-1">
                     <span className="text-[11px] font-mono font-bold text-slopes uppercase tracking-wider flex items-center gap-1.5">

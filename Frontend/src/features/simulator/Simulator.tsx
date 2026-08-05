@@ -105,11 +105,10 @@ const Simulator: React.FC = () => {
                 whileTap={{ scale: 0.97 }}
                 type="button"
                 onClick={() => navigate(`/simulator/${item}`)}
-                className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                  item === algorithmId
+                className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${item === algorithmId
                     ? 'bg-primary-600 text-white'
                     : 'bg-secondary-200 dark:bg-secondary-700 text-secondary-800 dark:text-secondary-100'
-                }`}
+                  }`}
               >
                 {algorithmRegistry[item].name}
               </motion.button>
