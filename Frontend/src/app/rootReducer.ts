@@ -1,7 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
 import dashboardReducer from '../features/dashboard/dashboardSlice';
-import simulatorReducer from '../features/simulator/simulatorSlice';
 import practiceReducer from '../features/practice/practiceSlice';
 import leaderboardReducer from '../features/leaderboard/leaderboardSlice';
 import profileReducer from '../features/profile/profileSlice';
@@ -15,7 +14,6 @@ import neuralNetworkReducer from '../features/neuralNetwork/neuralNetworkSlice';
 const rootReducer = combineReducers({
   auth: authReducer,
   dashboard: dashboardReducer,
-  simulator: simulatorReducer,
   gradientDescent: gradientDescentReducer,
   linearRegression: linearRegressionReducer,
   logisticRegression: logisticRegressionReducer,

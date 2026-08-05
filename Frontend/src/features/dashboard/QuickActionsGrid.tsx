@@ -9,10 +9,10 @@ export const QuickActionsGrid: React.FC = () => {
 
   const actions = [
     {
-      title: '3D Simulator Workspace',
+      title: '3D Lab Workspaces',
       description: 'Run interactive models & adjust weights in real-time',
       icon: Brain,
-      path: '/simulator/linear-regression',
+      path: '/linear-regression',
       badge: 'Interactive',
     },
     {

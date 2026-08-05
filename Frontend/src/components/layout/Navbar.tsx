@@ -83,12 +83,6 @@ const Navbar: React.FC = () => {
                 GD Lab
               </Link>
               <Link
-                to="/simulator"
-                className="text-sm font-medium text-slopes hover:text-arctic transition-colors"
-              >
-                Simulator
-              </Link>
-              <Link
                 to="/practice"
                 className="text-sm font-medium text-slopes hover:text-arctic transition-colors"
               >
@@ -200,13 +194,6 @@ const Navbar: React.FC = () => {
             onClick={() => setIsOpen(false)}
           >
             Dashboard
-          </Link>
-          <Link
-            to="/simulator"
-            className="block px-4 py-3 rounded-xl text-sm font-medium text-slopes hover:text-arctic hover:bg-mountainside/60 transition-colors"
-            onClick={() => setIsOpen(false)}
-          >
-            Simulator
           </Link>
           <Link
             to="/practice"

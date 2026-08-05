@@ -69,7 +69,7 @@ export const CTASection: React.FC = () => {
 
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
               <Link
-                to="/simulator"
+                to="/dashboard"
                 className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-secondary-900 border border-secondary-700 hover:border-secondary-500 text-white font-semibold transition-all"
               >
                 <span>Launch Interactive Studio</span>

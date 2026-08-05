@@ -64,7 +64,7 @@ const PracticePage: React.FC = () => {
 
   const handleStartChallenge = (challenge: any) => {
     dispatch(setCurrentChallenge(challenge));
-    navigate(`/simulator/${challenge.algorithm}?challenge=${challenge.id}`);
+    navigate(`/${challenge.algorithm}?challenge=${challenge.id}`);
   };
 
   return (

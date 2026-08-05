@@ -31,7 +31,6 @@ const Sidebar: React.FC = () => {
     { path: '/linear-regression', icon: Sliders, label: 'Linear Lab' },
     { path: '/logistic-regression', icon: Sliders, label: 'Logistic Lab' },
     { path: '/gradient-descent', icon: Sliders, label: 'Gradient Lab' },
-    { path: '/simulator', icon: Brain, label: 'Simulator' },
     { path: '/practice', icon: Target, label: 'Practice' },
     { path: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
   ];

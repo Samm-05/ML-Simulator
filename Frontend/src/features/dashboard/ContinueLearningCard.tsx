@@ -61,7 +61,7 @@ export const ContinueLearningCard: React.FC<ContinueLearningCardProps> = ({
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          onClick={() => navigate(`/simulator/${algorithmId}`)}
+          onClick={() => navigate(`/${algorithmId}`)}
           className="w-full md:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-arctic text-midnight font-bold text-sm hover:bg-slopes transition-all shadow-soft shrink-0"
         >
           <Play className="w-4 h-4 fill-midnight" />

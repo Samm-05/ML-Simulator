@@ -11,7 +11,6 @@ import ForgotPassword from '../features/auth/ForgotPassword';
 
 // Main Pages
 import Dashboard from '../features/dashboard/Dashboard';
-import Simulator from '../features/simulator/Simulator';
 import PracticePage from '../features/practice/PracticePage';
 import LeaderboardPage from '../features/leaderboard/LeaderboardPage';
 import ProfilePage from '../features/profile/ProfilePage';
@@ -37,18 +36,20 @@ const AppRoutes: React.FC = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/neural-network" element={<NeuralNetworkLab />} />
-          <Route path="/simulator/neural-network" element={<NeuralNetworkLab />} />
           <Route path="/linear-regression" element={<LinearRegressionLab />} />
-          <Route path="/simulator/linear-regression" element={<LinearRegressionLab />} />
           <Route path="/gradient-descent" element={<GradientDescentLab />} />
-          <Route path="/simulator/gradient-descent" element={<GradientDescentLab />} />
           <Route path="/logistic-regression" element={<LogisticRegressionLab />} />
-          <Route path="/simulator/logistic-regression" element={<LogisticRegressionLab />} />
-          <Route path="/simulator/logistic" element={<LogisticRegressionLab />} />
           <Route path="/overfitting-lab" element={<OverfittingLab />} />
-          <Route path="/simulator/overfitting" element={<OverfittingLab />} />
-          <Route path="/simulator" element={<Simulator />} />
-          <Route path="/simulator/:algorithm" element={<Simulator />} />
+
+          {/* Legacy Redirects */}
+          <Route path="/simulator/neural-network" element={<Navigate to="/neural-network" replace />} />
+          <Route path="/simulator/linear-regression" element={<Navigate to="/linear-regression" replace />} />
+          <Route path="/simulator/gradient-descent" element={<Navigate to="/gradient-descent" replace />} />
+          <Route path="/simulator/logistic-regression" element={<Navigate to="/logistic-regression" replace />} />
+          <Route path="/simulator/logistic" element={<Navigate to="/logistic-regression" replace />} />
+          <Route path="/simulator/overfitting" element={<Navigate to="/overfitting-lab" replace />} />
+          <Route path="/simulator/*" element={<Navigate to="/dashboard" replace />} />
+
           <Route path="/practice" element={<PracticePage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/profile" element={<ProfilePage />} />

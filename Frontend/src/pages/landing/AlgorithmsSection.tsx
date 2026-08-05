@@ -23,27 +23,27 @@ const algorithmList: AlgorithmItem[] = [
     difficulty: 'Beginner',
     description: 'Fit optimal parameter hyperplanes using gradient descent and observe real-time loss reduction curves.',
     icon: TrendingUp,
-    route: '/simulator/linear-regression',
+    route: '/linear-regression',
     accent: 'from-primary-500 to-indigo-600',
   },
   {
-    id: 'kmeans',
-    name: 'K-Means Clustering',
-    category: 'Unsupervised Learning',
+    id: 'gradient-descent',
+    name: 'Gradient Descent',
+    category: 'Optimization',
     difficulty: 'Intermediate',
-    description: 'Partition 3D point clouds into K optimal clusters by iteratively updating centroid coordinates.',
+    description: 'Observe 3D loss surface landscapes and learning rate convergence step-by-step.',
     icon: Layers,
-    route: '/simulator/kmeans',
+    route: '/gradient-descent',
     accent: 'from-teal-400 to-emerald-600',
   },
   {
-    id: 'decision-tree',
-    name: 'Decision Trees',
-    category: 'Supervised Learning',
+    id: 'overfitting-lab',
+    name: 'Overfitting & Regularization',
+    category: 'Validation',
     difficulty: 'Intermediate',
-    description: 'Visualize binary tree recursive splitting, Gini impurity minimization, and feature branch growth.',
+    description: 'Explore bias-variance trade-offs, L1/L2 penalty parameters, and cross-validation bounds.',
     icon: GitBranch,
-    route: '/simulator/decision-tree',
+    route: '/overfitting-lab',
     accent: 'from-amber-400 to-orange-600',
   },
   {
@@ -53,29 +53,18 @@ const algorithmList: AlgorithmItem[] = [
     difficulty: 'Advanced',
     description: 'Separate binary classes using sigmoid activation surfaces and log-loss decision boundaries.',
     icon: Activity,
-    route: '/simulator/logistic-regression',
+    route: '/logistic-regression',
     accent: 'from-purple-500 to-pink-600',
-  },
-  {
-    id: 'pca',
-    name: 'PCA (Principal Components)',
-    category: 'Dimensionality Reduction',
-    difficulty: 'Advanced',
-    description: 'Find principal variance axes via power iteration and project multi-dimensional data vectors.',
-    icon: PieChart,
-    route: '/simulator/pca',
-    accent: 'from-sky-400 to-blue-600',
   },
   {
     id: 'neural-networks',
     name: 'Neural Networks',
-    category: 'Deep Learning (Upcoming)',
+    category: 'Deep Learning',
     difficulty: 'Advanced',
     description: 'Multi-layer backpropagation visualization with activation heatmaps and gradient propagation paths.',
     icon: Cpu,
-    route: '/simulator',
+    route: '/neural-network',
     accent: 'from-rose-500 to-red-600',
-    isFuture: true,
   },
 ];
 
@@ -92,7 +81,7 @@ export const AlgorithmsSection: React.FC = () => {
               Interactive Library
             </span>
             <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mt-2">
-              Algorithm Simulators
+              Algorithm Labs
             </h2>
             <p className="mt-4 text-secondary-300 text-base sm:text-lg max-w-2xl">
               Choose an algorithm below to launch an interactive 3D simulation sandbox.
@@ -100,10 +89,10 @@ export const AlgorithmsSection: React.FC = () => {
           </div>
 
           <Link
-            to="/simulator"
+            to="/dashboard"
             className="inline-flex items-center gap-2 text-sm font-semibold text-primary-400 hover:text-primary-300 transition-colors"
           >
-            <span>Launch Full Studio</span>
+            <span>Launch Dashboard</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

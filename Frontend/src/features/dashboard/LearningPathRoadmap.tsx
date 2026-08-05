@@ -13,16 +13,16 @@ export interface PathNode {
 }
 
 const defaultNodes: PathNode[] = [
-  { id: '1', title: 'Machine Learning Basics', category: 'Fundamentals', status: 'completed', path: '/simulator/linear-regression' },
-  { id: '2', title: 'Linear Regression', category: 'Supervised', status: 'completed', path: '/simulator/linear-regression' },
-  { id: '3', title: 'Gradient Descent', category: 'Optimization', status: 'current', path: '/simulator/linear-regression' },
-  { id: '4', title: 'Logistic Regression', category: 'Classification', status: 'unlocked', path: '/simulator/logistic' },
-  { id: '5', title: 'Decision Boundary', category: 'Classification', status: 'unlocked', path: '/simulator/logistic' },
-  { id: '6', title: 'Decision Tree', category: 'Supervised', status: 'unlocked', path: '/simulator/decision-tree' },
-  { id: '7', title: 'KMeans Clustering', category: 'Unsupervised', status: 'unlocked', path: '/simulator/kmeans' },
-  { id: '8', title: 'PCA Reduction', category: 'Dimensionality', status: 'unlocked', path: '/simulator/pca' },
-  { id: '9', title: 'Neural Networks', category: 'Deep Learning', status: 'locked' },
-  { id: '10', title: 'Model Evaluation', category: 'Validation', status: 'locked' },
+  { id: '1', title: 'Machine Learning Basics', category: 'Fundamentals', status: 'completed', path: '/linear-regression' },
+  { id: '2', title: 'Linear Regression', category: 'Supervised', status: 'completed', path: '/linear-regression' },
+  { id: '3', title: 'Gradient Descent', category: 'Optimization', status: 'current', path: '/gradient-descent' },
+  { id: '4', title: 'Logistic Regression', category: 'Classification', status: 'unlocked', path: '/logistic-regression' },
+  { id: '5', title: 'Decision Boundary', category: 'Classification', status: 'unlocked', path: '/logistic-regression' },
+  { id: '6', title: 'Overfitting Lab', category: 'Validation', status: 'unlocked', path: '/overfitting-lab' },
+  { id: '7', title: 'Neural Networks', category: 'Deep Learning', status: 'unlocked', path: '/neural-network' },
+  { id: '8', title: 'Practice Challenges', category: 'Mastery', status: 'unlocked', path: '/practice' },
+  { id: '9', title: 'Model Evaluation', category: 'Validation', status: 'locked' },
+  { id: '10', title: 'Advanced Ensembles', category: 'Ensemble Learning', status: 'locked' },
 ];
 
 export const LearningPathRoadmap: React.FC<{ nodes?: PathNode[] }> = ({ nodes = defaultNodes }) => {
