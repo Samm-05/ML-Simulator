@@ -7,6 +7,7 @@ import {
   Activity,
   Layers,
   ShieldCheck,
+  Network,
 } from 'lucide-react';
 import PageContainer from '../../components/layout/PageContainer';
 
@@ -71,6 +72,16 @@ export const LAB_TABS: LabTab[] = [
     color: 'text-purple-400 border-purple-500/40 bg-purple-500/10',
     badge: 'Deep Learning',
     description: 'Multi-layer perceptron, forward & backpropagation dynamics',
+  },
+  {
+    id: 'kmeans-lab',
+    name: 'K-Means Clustering Lab',
+    shortName: 'K-Means Lab',
+    path: '/playground/kmeans-lab',
+    icon: Network,
+    color: 'text-indigo-400 border-indigo-500/40 bg-indigo-500/10',
+    badge: 'Unsupervised',
+    description: 'Iterative centroid optimization, Voronoi partitioning & WCSS minimization',
   },
 ];
 
