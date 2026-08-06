@@ -10,6 +10,7 @@ import {
   Activity,
   Network,
   Target,
+  Layers,
   CheckCircle2,
   BookOpen,
 } from 'lucide-react';
@@ -27,6 +28,8 @@ const getModuleIcon = (iconName: string) => {
       return <Network className="w-5 h-5 text-purple-400" />;
     case 'target':
       return <Target className="w-5 h-5 text-rose-400" />;
+    case 'layers':
+      return <Layers className="w-5 h-5 text-amber-400" />;
     default:
       return <BookOpen className="w-5 h-5 text-blue-400" />;
   }

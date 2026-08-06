@@ -1,3 +1,16 @@
+export interface ComparisonRow {
+  feature: string;
+  itemA: string;
+  itemB: string;
+  itemC?: string;
+}
+
+export interface PracticeQuestionItem {
+  type: 'conceptual' | 'numerical' | 'scenario';
+  question: string;
+  answer: string;
+}
+
 export interface LessonSection {
   id: string;
   title: string;
@@ -8,6 +21,22 @@ export interface LessonSection {
     language: string;
     code: string;
   };
+  notebookSnippet?: {
+    title: string;
+    filename: string;
+    code: string;
+  };
+  workedExample?: {
+    title: string;
+    steps: string[];
+  };
+  comparisonTable?: {
+    title: string;
+    headers: string[];
+    rows: ComparisonRow[];
+  };
+  practiceQuestions?: PracticeQuestionItem[];
+  keyTakeaways?: string[];
 }
 
 export interface CoachModule {
