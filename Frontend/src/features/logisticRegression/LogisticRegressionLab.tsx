@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   setViewMode,
@@ -17,9 +17,7 @@ import ComparisonView from './components/ComparisonView';
 import UnderfittingOverfittingView from './components/UnderfittingOverfittingView';
 import PageContainer from '../../components/layout/PageContainer';
 import RecentExperimentsPanel from '../../components/experiments/RecentExperimentsPanel';
-import { experimentService, SavedExperiment } from '../../services/experimentService';
-import Button from '../../components/ui/Button';
-import { toast } from 'react-hot-toast';
+import { SavedExperiment } from '../../services/experimentService';
 import {
   Brain,
   ArrowLeft,
@@ -27,7 +25,6 @@ import {
   Activity,
   Layers,
   Eye,
-  Save,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -37,29 +34,8 @@ export const LogisticRegressionLab: React.FC = () => {
   const { viewMode, isPlaying, currentEpoch, trajectory, config, points } = useAppSelector(
     (state) => state.logisticRegression
   );
-  const [saving, setSaving] = useState(false);
 
   const maxEpoch = trajectory.length > 0 ? trajectory.length - 1 : 0;
-  const currentSnapshot = trajectory[currentEpoch] || trajectory[0] || {};
-
-  const handleSaveExperiment = async () => {
-    setSaving(true);
-    const toastId = toast.loading('Saving Logistic Regression experiment...');
-    try {
-      await experimentService.saveExperiment({
-        algorithm: 'logistic-regression',
-        title: `Logistic Regression (α=${config.learningRate}, Threshold=${config.threshold})`,
-        parameters: config,
-        dataset: { count: points.length },
-        metrics: currentSnapshot,
-      });
-      toast.success('Logistic Regression experiment saved to MongoDB! +50 XP', { id: toastId });
-    } catch (err) {
-      toast.error('Failed to save experiment', { id: toastId });
-    } finally {
-      setSaving(false);
-    }
-  };
 
   const handleLoadExperiment = (exp: SavedExperiment) => {
     if (exp.parameters) {
@@ -117,16 +93,6 @@ export const LogisticRegressionLab: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-          <Button
-            variant="primary"
-            onClick={handleSaveExperiment}
-            isLoading={saving}
-            className="bg-cyan-500 hover:bg-cyan-400 text-midnight font-bold text-xs"
-            icon={<Save className="w-4 h-4" />}
-          >
-            Save Experiment
-          </Button>
-
           {/* View Mode Navigation Tabs */}
           <div className="flex items-center p-1 bg-mountainside/40 rounded-2xl border border-apres/30 overflow-x-auto scrollbar-hide">
             {(

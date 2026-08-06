@@ -12,7 +12,6 @@ import {
   FileSpreadsheet,
   Save,
   FileText,
-  Download,
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import {
@@ -28,7 +27,7 @@ import { DatasetPresetType } from '../types';
 import { experimentService } from '../../../services/experimentService';
 import { toast } from 'react-hot-toast';
 import Button from '../../../components/ui/Button';
-import LinearReportModal from './LinearReportModal';
+import { UniversalReportModal } from '../../../components/reports/UniversalReportModal';
 
 export const LeftPanel: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -125,7 +124,7 @@ export const LeftPanel: React.FC = () => {
         <button
           type="button"
           onClick={() => dispatch(setTutorialMode(false))}
-          className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+          className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
             !tutorialMode
               ? 'bg-mountainside text-arctic border border-apres/50 shadow-soft'
               : 'text-slopes hover:text-arctic hover:bg-mountainside/40'
@@ -138,7 +137,7 @@ export const LeftPanel: React.FC = () => {
         <button
           type="button"
           onClick={() => dispatch(setTutorialMode(true))}
-          className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+          className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
             tutorialMode
               ? 'bg-mountainside text-arctic border border-apres/50 shadow-soft'
               : 'text-slopes hover:text-arctic hover:bg-mountainside/40'
@@ -202,7 +201,7 @@ export const LeftPanel: React.FC = () => {
               type="button"
               onClick={handlePrevTutorialStep}
               disabled={currentTutorialStep === 0}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slopes hover:text-arctic hover:bg-mountainside/50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slopes hover:text-arctic hover:bg-mountainside/50 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
             >
               Previous
             </button>
@@ -211,7 +210,7 @@ export const LeftPanel: React.FC = () => {
               type="button"
               onClick={handleNextTutorialStep}
               disabled={currentTutorialStep >= TUTORIAL_STEPS.length - 1}
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-arctic text-midnight hover:bg-slopes transition-all shadow-soft flex items-center gap-1 disabled:opacity-50"
+              className="px-4 py-2 rounded-xl text-xs font-bold bg-arctic text-midnight hover:bg-slopes transition-all shadow-soft flex items-center gap-1 disabled:opacity-50 cursor-pointer"
             >
               Next Lesson
               <ChevronRight className="w-4 h-4" />
@@ -294,7 +293,7 @@ export const LeftPanel: React.FC = () => {
             </form>
           </motion.div>
 
-          {/* Action Card below Dataset Generator: Save Experiment & Download PDF Report */}
+          {/* Action Card: Save Experiment & Download PDF Report */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -327,16 +326,16 @@ export const LeftPanel: React.FC = () => {
                 className="w-full justify-center text-xs font-bold py-2.5 border-mountainside text-arctic hover:bg-mountainside/60 cursor-pointer"
                 icon={<FileText className="w-4 h-4 text-cyan-400" />}
               >
-                Download Analysis Report PDF
+                Download Detailed Report (PDF) 📄
               </Button>
             </div>
           </motion.div>
         </>
       )}
 
-      {/* Report Modal Component */}
+      {/* Universal Detailed Report Modal */}
       {showReportModal && (
-        <LinearReportModal onClose={() => setShowReportModal(false)} />
+        <UniversalReportModal algorithm="linear-regression" onClose={() => setShowReportModal(false)} />
       )}
     </div>
   );
