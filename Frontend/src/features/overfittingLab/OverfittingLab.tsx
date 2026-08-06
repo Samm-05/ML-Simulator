@@ -8,12 +8,13 @@ import TrainingValidationChart from './components/TrainingValidationChart';
 import BiasVarianceChart from './components/BiasVarianceChart';
 import ControlPanel from './components/ControlPanel';
 import MathExplanationPanel from './components/MathExplanationPanel';
-import { Brain, ArrowLeft, Activity, Sliders, ShieldCheck } from 'lucide-react';
+import GuidedStepsPanel from './components/GuidedStepsPanel';
+import { Brain, ArrowLeft } from 'lucide-react';
 import gsap from 'gsap';
 
 export const OverfittingLab: React.FC = () => {
   const navigate = useNavigate();
-  const { result } = useAppSelector((state) => state.overfitting);
+  const { result, config } = useAppSelector((state) => state.overfitting);
   const headerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export const OverfittingLab: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/dashboard')}
-            className="p-2.5 rounded-2xl bg-mountainside/50 text-slopes hover:text-arctic hover:bg-mountainside border border-apres/30 transition-all"
+            className="p-2.5 rounded-2xl bg-mountainside/50 text-slopes hover:text-arctic hover:bg-mountainside border border-apres/30 transition-all cursor-pointer"
             title="Return to Dashboard"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -69,15 +70,30 @@ export const OverfittingLab: React.FC = () => {
             <span className="text-apres">Val Loss:</span>
             <span className="text-amber-400 font-bold">{result.valLoss.toFixed(4)}</span>
           </div>
+          <div className="px-3 py-1.5 rounded-2xl bg-mountainside/50 border border-apres/30 flex items-center gap-2">
+            <span className="text-apres">Regime:</span>
+            <span className={`font-bold uppercase ${
+              result.regime === 'good_fit'
+                ? 'text-emerald-400'
+                : result.regime === 'underfitting'
+                ? 'text-blue-400'
+                : 'text-rose-400'
+            }`}>
+              {result.regime.replace('_', ' ')}
+            </span>
+          </div>
         </div>
       </header>
 
-      {/* Main Body 3-Panel Layout */}
+      {/* Guided Walkthrough Step-by-Step Panel */}
+      <GuidedStepsPanel />
+
+      {/* Main Body Layout */}
       <main className="w-full space-y-4">
         {/* Top 3D Viewport & Prediction Curve Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch min-h-[480px]">
           {/* Left Column: 3D Surface */}
-          <div className="lg:col-span-6 h-full min-h-[400px]">
+          <div className="lg:col-span-6 h-full min-h-[420px]">
             <Overfitting3DScene />
           </div>
 

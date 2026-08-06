@@ -14,7 +14,6 @@ import BottomPanel from './components/BottomPanel';
 import SigmoidExplorer from './components/SigmoidExplorer';
 import ComparisonView from './components/ComparisonView';
 import UnderfittingOverfittingView from './components/UnderfittingOverfittingView';
-import QuizPanel from './components/QuizPanel';
 import PageContainer from '../../components/layout/PageContainer';
 import {
   Brain,
@@ -22,9 +21,7 @@ import {
   Sliders,
   Activity,
   Layers,
-  HelpCircle,
   Eye,
-  BookOpen,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -65,7 +62,7 @@ export const LogisticRegressionLab: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/dashboard')}
-            className="p-2.5 rounded-2xl bg-mountainside/50 text-slopes hover:text-arctic hover:bg-mountainside border border-apres/30 transition-all"
+            className="p-2.5 rounded-2xl bg-mountainside/50 text-slopes hover:text-arctic hover:bg-mountainside border border-apres/30 transition-all cursor-pointer"
             title="Return to Dashboard"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -86,7 +83,7 @@ export const LogisticRegressionLab: React.FC = () => {
           </div>
         </div>
 
-        {/* View Mode Navigation Tabs */}
+        {/* View Mode Navigation Tabs (Quiz Tab Removed) */}
         <div className="flex items-center p-1 bg-mountainside/40 rounded-2xl border border-apres/30 overflow-x-auto scrollbar-hide">
           {(
             [
@@ -94,13 +91,12 @@ export const LogisticRegressionLab: React.FC = () => {
               ['sigmoid', 'Sigmoid Curve', Activity],
               ['comparison', 'Model Compare', Eye],
               ['underfitting', 'Model Fit', Layers],
-              ['quiz', 'Quiz', HelpCircle],
             ] as [ViewMode, string, React.ElementType][]
           ).map(([mode, label, Icon]) => (
             <button
               key={mode}
               onClick={() => dispatch(setViewMode(mode))}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all whitespace-nowrap ${
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
                 viewMode === mode
                   ? 'bg-arctic text-midnight font-bold shadow-md'
                   : 'text-slopes hover:text-arctic'
@@ -155,12 +151,6 @@ export const LogisticRegressionLab: React.FC = () => {
         {viewMode === 'underfitting' && (
           <div className="w-full py-2">
             <UnderfittingOverfittingView />
-          </div>
-        )}
-
-        {viewMode === 'quiz' && (
-          <div className="w-full py-4">
-            <QuizPanel />
           </div>
         )}
       </main>

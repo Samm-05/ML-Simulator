@@ -6,11 +6,10 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import {
   addPoint,
   setHoveredPointId,
-  updatePointPosition,
 } from '../logisticRegressionSlice';
 import { sigmoid, mapFeatures } from '../engine/logisticRegressionEngine';
 import { DataPoint2D } from '../types';
-import { Maximize2, RotateCcw, Plus, Eye } from 'lucide-react';
+import { RotateCcw, Plus, Eye, Sparkles, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
 // Custom Shader for Soft Probability Heatmap Surface
 const HeatmapShader = {
@@ -50,7 +49,6 @@ const HeatmapShader = {
     }
 
     void main() {
-      // Map world position x, y (from -5 to 5)
       float x1 = vWorldPosition.x;
       float x2 = vWorldPosition.y;
 
@@ -61,10 +59,6 @@ const HeatmapShader = {
 
       float prob = sigmoid(z);
 
-      // Color Gradient:
-      // Class 0 (Low Prob): Deep Arctic Blue (vec3(0.08, 0.58, 0.95))
-      // Threshold (Equal Prob): Translucent White (vec3(0.9, 0.9, 0.95))
-      // Class 1 (High Prob): Crimson Red (vec3(0.95, 0.25, 0.35))
       vec3 colClass0 = vec3(0.05, 0.45, 0.85);
       vec3 colBoundary = vec3(0.9, 0.9, 0.95);
       vec3 colClass1 = vec3(0.95, 0.25, 0.35);
@@ -165,7 +159,6 @@ const DecisionBoundaryLine: React.FC = () => {
         }
       }
     } else {
-      // Contour sampling for polynomial boundary
       for (let x = -5; x <= 5; x += step) {
         for (let y = -5; y <= 5; y += step) {
           const phi = mapFeatures(x, y, config.featureType);
@@ -260,7 +253,7 @@ const PointSphere: React.FC<{ point: DataPoint2D }> = ({ point }) => {
       {/* Hover Tooltip */}
       {isHovered && (
         <Html distanceFactor={10} position={[0, 0.35, 0.2]}>
-          <div className="bg-midnight/90 backdrop-blur-md text-arctic text-xs p-2.5 rounded-xl border border-apres/40 shadow-2xl space-y-1 min-w-[150px] pointer-events-none font-mono">
+          <div className="bg-midnight/90 backdrop-blur-md text-arctic text-xs p-2.5 rounded-xl border border-apres/40 shadow-2xl space-y-1 min-w-[160px] pointer-events-none font-mono">
             <div className="flex items-center justify-between border-b border-apres/30 pb-1">
               <span className="font-bold">Point {point.id.slice(0, 5)}</span>
               <span
@@ -268,24 +261,24 @@ const PointSphere: React.FC<{ point: DataPoint2D }> = ({ point }) => {
                   point.label === 1 ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'
                 }`}
               >
-                Class {point.label}
+                Class {point.label} ({point.label === 1 ? 'Red' : 'Blue'})
               </span>
             </div>
             <div>
-              x₁: <span className="text-arctic font-semibold">{point.x1.toFixed(2)}</span>
+              Feature 1 (x₁): <span className="text-arctic font-semibold">{point.x1.toFixed(2)}</span>
             </div>
             <div>
-              x₂: <span className="text-arctic font-semibold">{point.x2.toFixed(2)}</span>
+              Feature 2 (x₂): <span className="text-arctic font-semibold">{point.x2.toFixed(2)}</span>
             </div>
             <div>
-              z: <span className="text-yellow-400">{z.toFixed(2)}</span>
+              Linear Score (z): <span className="text-yellow-400">{z.toFixed(2)}</span>
             </div>
             <div>
-              P(y=1): <span className="text-cyan-400">{(prob * 100).toFixed(1)}%</span>
+              Probability P(y=1): <span className="text-cyan-400">{(prob * 100).toFixed(1)}%</span>
             </div>
             <div className="pt-1 flex items-center justify-between border-t border-apres/30 text-[10px]">
-              <span>Pred: {predictedLabel}</span>
-              <span className={isCorrect ? 'text-green-400' : 'text-amber-400 font-bold'}>
+              <span>Pred: Class {predictedLabel}</span>
+              <span className={isCorrect ? 'text-green-400 font-bold' : 'text-amber-400 font-bold'}>
                 {isCorrect ? '✓ Correct' : '✕ Misclassified'}
               </span>
             </div>
@@ -296,11 +289,29 @@ const PointSphere: React.FC<{ point: DataPoint2D }> = ({ point }) => {
   );
 };
 
+// 3D Axis Labels Overlay
+const AxisLabels3D: React.FC = () => {
+  return (
+    <>
+      <Html position={[4.2, -4.6, 0.1]}>
+        <div className="px-2 py-0.5 rounded bg-midnight/90 border border-cyan-500/50 text-cyan-300 text-[10px] font-mono font-bold shadow-md whitespace-nowrap">
+          Feature 1 (x₁) →
+        </div>
+      </Html>
+
+      <Html position={[-4.6, 4.2, 0.1]}>
+        <div className="px-2 py-0.5 rounded bg-midnight/90 border border-cyan-500/50 text-cyan-300 text-[10px] font-mono font-bold shadow-md whitespace-nowrap">
+          ↑ Feature 2 (x₂)
+        </div>
+      </Html>
+    </>
+  );
+};
+
 // Main Three.js Scene Content
 const SceneContent: React.FC<{ addClassLabel: 0 | 1 }> = ({ addClassLabel }) => {
   const dispatch = useAppDispatch();
   const { points } = useAppSelector((state) => state.logisticRegression);
-  const { raycaster, camera } = useThree();
 
   const handlePlaneClick = (e: any) => {
     if (e.intersections && e.intersections.length > 0) {
@@ -317,14 +328,12 @@ const SceneContent: React.FC<{ addClassLabel: 0 | 1 }> = ({ addClassLabel }) => 
       <directionalLight position={[10, 10, 10]} intensity={1.2} />
       <directionalLight position={[-10, -10, -5]} intensity={0.4} color="#3b82f6" />
 
-      {/* Grid Lines */}
       <gridHelper
         args={[10, 20, '#475569', '#1e293b']}
         rotation={[Math.PI / 2, 0, 0]}
         position={[0, 0, -0.08]}
       />
 
-      {/* Clickable Background Plane */}
       <mesh
         position={[0, 0, -0.06]}
         onClick={handlePlaneClick}
@@ -334,13 +343,10 @@ const SceneContent: React.FC<{ addClassLabel: 0 | 1 }> = ({ addClassLabel }) => 
         <meshBasicMaterial />
       </mesh>
 
-      {/* Heatmap Shader Surface */}
       <HeatmapSurface />
-
-      {/* Decision Boundary Line */}
       <DecisionBoundaryLine />
+      <AxisLabels3D />
 
-      {/* Render All 3D Points */}
       {points.map((pt) => (
         <PointSphere key={pt.id} point={pt} />
       ))}
@@ -351,7 +357,14 @@ const SceneContent: React.FC<{ addClassLabel: 0 | 1 }> = ({ addClassLabel }) => 
 export const Center3DScene: React.FC = () => {
   const [addClassLabel, setAddClassLabel] = useState<0 | 1>(1);
   const [is3D, setIs3D] = useState(true);
+  const [showExplanationBanner, setShowExplanationBanner] = useState(false);
   const controlsRef = useRef<any>(null);
+
+  const { trajectory, currentEpoch, config } = useAppSelector(
+    (state) => state.logisticRegression
+  );
+
+  const currentWeights = trajectory[currentEpoch]?.weights || { w1: 0, w2: 0, b: 0 };
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -360,19 +373,19 @@ export const Center3DScene: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-full min-h-[500px] bg-midnight rounded-3xl overflow-hidden border border-apres/30 shadow-2xl flex flex-col">
+    <div className="relative w-full h-full min-h-[500px] bg-midnight rounded-3xl overflow-hidden border border-apres/30 shadow-2xl flex flex-col select-none">
       {/* Top Floating Control Bar */}
-      <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-auto">
-        {/* Class Selector for Clicking */}
-        <div className="flex items-center gap-2 bg-midnight/80 backdrop-blur-md p-1.5 rounded-2xl border border-apres/40 shadow-lg">
-          <span className="text-xs text-apres px-2 font-mono flex items-center gap-1">
-            <Plus className="w-3.5 h-3.5" /> Add Point:
+      <div className="absolute top-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-auto">
+        {/* Class Selector for Adding Points */}
+        <div className="flex items-center gap-1.5 bg-midnight/90 backdrop-blur-md p-1.5 rounded-2xl border border-apres/40 shadow-lg">
+          <span className="text-[11px] text-apres px-1 font-mono flex items-center gap-1">
+            <Plus className="w-3.5 h-3.5" /> Point:
           </span>
           <button
             onClick={() => setAddClassLabel(0)}
-            className={`px-3 py-1 text-xs font-semibold rounded-xl transition-all ${
+            className={`px-2.5 py-1 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
               addClassLabel === 0
-                ? 'bg-blue-500 text-white shadow-md shadow-blue-500/30'
+                ? 'bg-blue-500 text-white shadow-md shadow-blue-500/30 font-bold'
                 : 'text-slopes hover:text-arctic'
             }`}
           >
@@ -380,9 +393,9 @@ export const Center3DScene: React.FC = () => {
           </button>
           <button
             onClick={() => setAddClassLabel(1)}
-            className={`px-3 py-1 text-xs font-semibold rounded-xl transition-all ${
+            className={`px-2.5 py-1 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
               addClassLabel === 1
-                ? 'bg-red-500 text-white shadow-md shadow-red-500/30'
+                ? 'bg-red-500 text-white shadow-md shadow-red-500/30 font-bold'
                 : 'text-slopes hover:text-arctic'
             }`}
           >
@@ -390,24 +403,62 @@ export const Center3DScene: React.FC = () => {
           </button>
         </div>
 
-        {/* Camera & View Controls */}
-        <div className="flex items-center gap-2 bg-midnight/80 backdrop-blur-md p-1.5 rounded-2xl border border-apres/40 shadow-lg">
+        {/* Controls: Guide Toggle, 2D/3D View, Reset Camera */}
+        <div className="flex items-center gap-1.5 bg-midnight/90 backdrop-blur-md p-1.5 rounded-2xl border border-apres/40 shadow-lg">
+          <button
+            onClick={() => setShowExplanationBanner(!showExplanationBanner)}
+            className={`px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 text-xs font-mono cursor-pointer ${
+              showExplanationBanner
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold'
+                : 'text-slopes hover:text-arctic'
+            }`}
+            title="Toggle Scene Explanation Guide"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span>Guide</span>
+            {showExplanationBanner ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+          </button>
+
           <button
             onClick={() => setIs3D(!is3D)}
-            className="p-2 rounded-xl text-slopes hover:text-arctic hover:bg-mountainside/50 transition-all flex items-center gap-1 text-xs font-mono"
+            className="px-2.5 py-1 rounded-xl text-slopes hover:text-arctic hover:bg-mountainside/50 transition-all flex items-center gap-1 text-xs font-mono cursor-pointer"
             title="Toggle 2D/3D View"
           >
-            <Eye className="w-4 h-4" /> {is3D ? '3D View' : '2D View'}
+            <Eye className="w-3.5 h-3.5" /> {is3D ? '3D' : '2D'}
           </button>
           <button
             onClick={handleResetCamera}
-            className="p-2 rounded-xl text-slopes hover:text-arctic hover:bg-mountainside/50 transition-all"
-            title="Reset Camera"
+            className="p-1.5 rounded-xl text-slopes hover:text-arctic hover:bg-mountainside/50 transition-all cursor-pointer"
+            title="Reset Camera View"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
+
+      {/* Collapsible Scene Guide Box */}
+      {showExplanationBanner && (
+        <div className="absolute top-14 left-3 right-3 z-30 bg-midnight/95 backdrop-blur-md p-3.5 rounded-2xl border border-cyan-500/40 shadow-2xl space-y-1.5 text-xs font-sans text-arctic pointer-events-auto">
+          <div className="flex items-center justify-between border-b border-cyan-500/30 pb-1 font-mono text-[11px] font-bold text-cyan-400">
+            <span className="flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" /> 3D Classification Guide
+            </span>
+            <button
+              onClick={() => setShowExplanationBanner(false)}
+              className="text-apres hover:text-arctic text-[10px] cursor-pointer"
+            >
+              ✕ Close
+            </button>
+          </div>
+          <p className="text-slopes text-[11px] leading-relaxed">
+            <strong className="text-arctic">White Line:</strong> Decision Boundary where score <code className="text-cyan-300">z = 0</code> and probability <code className="text-cyan-300">P = 50%</code>.
+            <br />
+            <strong className="text-arctic">Red Region:</strong> Predicted <strong className="text-red-400">Class 1 (P ≥ {config.threshold})</strong>. <strong className="text-arctic">Blue Region:</strong> Predicted <strong className="text-blue-400">Class 0 (P &lt; {config.threshold})</strong>.
+            <br />
+            <strong className="text-amber-400">Yellow Ring:</strong> Misclassified sample error.
+          </p>
+        </div>
+      )}
 
       {/* React Three Fiber Canvas */}
       <Canvas
@@ -427,20 +478,23 @@ export const Center3DScene: React.FC = () => {
         <SceneContent addClassLabel={addClassLabel} />
       </Canvas>
 
-      {/* Bottom Hint Legend Bar */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between bg-midnight/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-apres/30 text-xs font-mono text-slopes pointer-events-none">
-        <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-blue-500 inline-block shadow-sm" /> Class 0
+      {/* Bottom Visual Legend & Labeling Bar */}
+      <div className="absolute bottom-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between bg-midnight/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-apres/40 text-[11px] font-mono text-slopes pointer-events-none shadow-2xl gap-2">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="flex items-center gap-1 text-blue-400 font-bold">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block shadow-sm" /> Class 0
           </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-red-500 inline-block shadow-sm" /> Class 1
+          <span className="flex items-center gap-1 text-red-400 font-bold">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block shadow-sm" /> Class 1
           </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-4 h-0.5 bg-white inline-block shadow-sm" /> Decision Boundary (z=0)
+          <span className="flex items-center gap-1 text-arctic font-bold">
+            <span className="w-3 h-0.5 bg-white inline-block shadow-sm" /> Boundary (z = 0)
+          </span>
+          <span className="flex items-center gap-1 text-amber-400 font-bold">
+            <span className="w-2.5 h-2.5 rounded-full border-2 border-amber-400 inline-block" /> Error
           </span>
         </div>
-        <span className="text-[11px] text-apres">Click on canvas to add data points</span>
+        <span className="text-[10px] text-cyan-300 font-bold">z = {currentWeights.w1.toFixed(2)}x₁ + {currentWeights.w2.toFixed(2)}x₂ + {currentWeights.b.toFixed(2)}</span>
       </div>
     </div>
   );

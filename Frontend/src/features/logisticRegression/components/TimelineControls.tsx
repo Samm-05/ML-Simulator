@@ -12,6 +12,7 @@ import {
   RotateCcw,
   SkipBack,
   SkipForward,
+  Sparkles,
 } from 'lucide-react';
 
 export const TimelineControls: React.FC = () => {
@@ -29,25 +30,41 @@ export const TimelineControls: React.FC = () => {
       timer = setInterval(() => {
         dispatch((dispatch, getState) => {
           const state = getState().logisticRegression;
-          if (state.currentEpoch < maxEpoch) {
+          const max = state.trajectory.length > 0 ? state.trajectory.length - 1 : 0;
+          if (state.currentEpoch < max) {
             dispatch(setCurrentEpoch(state.currentEpoch + 1));
           } else {
             dispatch(setIsPlaying(false));
           }
         });
-      }, 300 / playbackSpeed);
+      }, 250 / playbackSpeed);
     }
     return () => clearInterval(timer);
-  }, [isPlaying, playbackSpeed, maxEpoch, dispatch]);
+  }, [isPlaying, playbackSpeed, dispatch]);
+
+  const handlePlayToggle = () => {
+    if (!isPlaying) {
+      // If we are at the end of the simulation, restart from epoch 0
+      if (currentEpoch >= maxEpoch) {
+        dispatch(setCurrentEpoch(0));
+      }
+      dispatch(setIsPlaying(true));
+    } else {
+      dispatch(setIsPlaying(false));
+    }
+  };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-midnight/90 backdrop-blur-md rounded-2xl border border-apres/30 font-mono text-xs text-arctic">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-midnight/90 backdrop-blur-md rounded-2xl border border-apres/30 font-mono text-xs text-arctic shadow-hard">
       {/* Playback Controls Group */}
       <div className="flex items-center gap-2">
         <button
-          onClick={() => dispatch(resetSimulation())}
-          className="p-2 rounded-xl bg-mountainside text-slopes hover:text-arctic transition-all"
-          title="Reset Simulation"
+          onClick={() => {
+            dispatch(resetSimulation());
+            dispatch(setCurrentEpoch(0));
+          }}
+          className="p-2 rounded-xl bg-mountainside text-slopes hover:text-arctic hover:bg-mountainside/80 transition-all cursor-pointer"
+          title="Reset Simulation (Epoch 0)"
         >
           <RotateCcw className="w-4 h-4" />
         </button>
@@ -55,25 +72,40 @@ export const TimelineControls: React.FC = () => {
         <button
           disabled={currentEpoch <= 0}
           onClick={() => dispatch(setCurrentEpoch(currentEpoch - 1))}
-          className="p-2 rounded-xl bg-mountainside text-slopes hover:text-arctic disabled:opacity-40 transition-all"
-          title="Step Back"
+          className="p-2 rounded-xl bg-mountainside text-slopes hover:text-arctic hover:bg-mountainside/80 disabled:opacity-40 transition-all cursor-pointer disabled:cursor-not-allowed"
+          title="Step Back 1 Epoch"
         >
           <SkipBack className="w-4 h-4" />
         </button>
 
+        {/* Main Play / Pause Action Button */}
         <button
-          onClick={() => dispatch(setIsPlaying(!isPlaying))}
-          className="p-2.5 rounded-xl bg-arctic text-midnight hover:bg-slopes shadow-lg transition-all"
-          title={isPlaying ? 'Pause' : 'Play'}
+          onClick={handlePlayToggle}
+          className={`px-4 py-2 rounded-xl font-bold transition-all shadow-lg flex items-center gap-2 cursor-pointer ${
+            isPlaying
+              ? 'bg-amber-500 hover:bg-amber-400 text-midnight shadow-amber-500/30 animate-pulse'
+              : 'bg-emerald-500 hover:bg-emerald-400 text-midnight shadow-emerald-500/30'
+          }`}
+          title={isPlaying ? 'Pause Simulation' : 'Play Training Loop'}
         >
-          {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          {isPlaying ? (
+            <>
+              <Pause className="w-4 h-4" />
+              <span>Pause</span>
+            </>
+          ) : (
+            <>
+              <Play className="w-4 h-4" />
+              <span>{currentEpoch >= maxEpoch ? 'Replay' : 'Play'}</span>
+            </>
+          )}
         </button>
 
         <button
           disabled={currentEpoch >= maxEpoch}
           onClick={() => dispatch(setCurrentEpoch(currentEpoch + 1))}
-          className="p-2 rounded-xl bg-mountainside text-slopes hover:text-arctic disabled:opacity-40 transition-all"
-          title="Step Forward"
+          className="p-2 rounded-xl bg-mountainside text-slopes hover:text-arctic hover:bg-mountainside/80 disabled:opacity-40 transition-all cursor-pointer disabled:cursor-not-allowed"
+          title="Step Forward 1 Epoch"
         >
           <SkipForward className="w-4 h-4" />
         </button>
@@ -101,9 +133,9 @@ export const TimelineControls: React.FC = () => {
           <button
             key={speed}
             onClick={() => dispatch(setPlaybackSpeed(speed))}
-            className={`px-2 py-1 text-[10px] rounded-lg font-bold transition-all ${
+            className={`px-2 py-1 text-[10px] rounded-lg font-bold transition-all cursor-pointer ${
               playbackSpeed === speed
-                ? 'bg-cyan-500 text-midnight'
+                ? 'bg-cyan-500 text-midnight font-bold shadow-md shadow-cyan-500/20'
                 : 'bg-mountainside/50 text-slopes hover:text-arctic'
             }`}
           >

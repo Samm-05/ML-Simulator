@@ -15,6 +15,7 @@ import MLCoachHomePage from '../features/coach/pages/MLCoachHomePage';
 import ModuleLessonPage from '../features/coach/pages/ModuleLessonPage';
 import PlaygroundLayout from '../features/playground/PlaygroundLayout';
 import PracticePage from '../features/practice/PracticePage';
+import QuizPage from '../features/practice/pages/QuizPage';
 import LeaderboardPage from '../features/leaderboard/LeaderboardPage';
 import ProfilePage from '../features/profile/ProfilePage';
 
@@ -67,7 +68,11 @@ const AppRoutes: React.FC = () => {
           <Route path="/simulator/overfitting" element={<Navigate to="/playground/overfitting-lab" replace />} />
           <Route path="/simulator/*" element={<Navigate to="/playground" replace />} />
 
+          {/* Practice Module & Quiz Routes */}
           <Route path="/practice" element={<PracticePage />} />
+          <Route path="/practice/quiz/:categoryId" element={<QuizPage />} />
+          <Route path="/practice/results" element={<QuizPage />} />
+
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>

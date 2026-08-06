@@ -74,11 +74,10 @@ export const LeftPanel: React.FC = () => {
         <button
           type="button"
           onClick={() => dispatch(setTutorialMode(false))}
-          className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
-            !tutorialMode
+          className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${!tutorialMode
               ? 'bg-mountainside text-arctic border border-apres/50 shadow-soft'
               : 'text-slopes hover:text-arctic hover:bg-mountainside/40'
-          }`}
+            }`}
         >
           <BookOpen className="w-4 h-4 text-cyan-400" />
           Free Lab Mode
@@ -87,11 +86,10 @@ export const LeftPanel: React.FC = () => {
         <button
           type="button"
           onClick={() => dispatch(setTutorialMode(true))}
-          className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
-            tutorialMode
+          className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${tutorialMode
               ? 'bg-mountainside text-arctic border border-apres/50 shadow-soft'
               : 'text-slopes hover:text-arctic hover:bg-mountainside/40'
-          }`}
+            }`}
         >
           <Sparkles className="w-4 h-4 text-amber-400" />
           15-Step Tutorial
@@ -199,11 +197,10 @@ export const LeftPanel: React.FC = () => {
                   key={p.id}
                   type="button"
                   onClick={() => dispatch(setDatasetPreset(p.id))}
-                  className={`py-1.5 px-2 rounded-xl text-xs font-medium border text-left transition-all ${
-                    params.preset === p.id
+                  className={`py-1.5 px-2 rounded-xl text-xs font-medium border text-left transition-all ${params.preset === p.id
                       ? 'bg-mountainside text-arctic border-cyan-400/80 font-bold'
                       : 'bg-mountainside/40 text-slopes border-transparent hover:bg-mountainside/80'
-                  }`}
+                    }`}
                 >
                   {p.label}
                 </button>

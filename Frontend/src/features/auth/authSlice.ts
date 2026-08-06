@@ -48,15 +48,26 @@ const isTokenExpired = (token: string | null) => {
 
 const storedToken = localStorage.getItem('accessToken');
 const storedRefreshToken = localStorage.getItem('refreshToken');
+const storedUserRaw = localStorage.getItem('user');
+let storedUser: User | null = null;
+if (storedUserRaw) {
+  try {
+    storedUser = JSON.parse(storedUserRaw);
+  } catch {
+    storedUser = null;
+  }
+}
+
 const tokenExpired = isTokenExpired(storedToken);
 
 if (tokenExpired) {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
 }
 
 const initialState: AuthState = {
-  user: null,
+  user: tokenExpired ? null : storedUser,
   token: tokenExpired ? null : storedToken,
   refreshToken: tokenExpired ? null : storedRefreshToken,
   isLoading: false,
@@ -73,6 +84,7 @@ export const login = createAsyncThunk(
       
       localStorage.setItem('accessToken', tokens.accessToken);
       localStorage.setItem('refreshToken', tokens.refreshToken);
+      localStorage.setItem('user', JSON.stringify(user));
       
       toast.success('Welcome back!');
       return { user, tokens };
@@ -92,6 +104,7 @@ export const register = createAsyncThunk(
       
       localStorage.setItem('accessToken', tokens.accessToken);
       localStorage.setItem('refreshToken', tokens.refreshToken);
+      localStorage.setItem('user', JSON.stringify(user));
       
       toast.success('Account created successfully!');
       return { user, tokens };
@@ -105,6 +118,7 @@ export const register = createAsyncThunk(
 export const logout = createAsyncThunk('auth/logout', async () => {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
   toast.success('Logged out successfully');
 });
 
@@ -115,6 +129,7 @@ const authSlice = createSlice({
     updateUser: (state, action: PayloadAction<Partial<User>>) => {
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
+        localStorage.setItem('user', JSON.stringify(state.user));
       }
     },
     clearCredentials: (state) => {
@@ -122,11 +137,17 @@ const authSlice = createSlice({
       state.token = null;
       state.refreshToken = null;
       state.isAuthenticated = false;
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
     },
     setCredentials: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuthenticated = true;
+      if (action.payload.user) {
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
+      }
     },
   },
   extraReducers: (builder) => {

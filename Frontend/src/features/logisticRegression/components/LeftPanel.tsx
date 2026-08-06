@@ -118,15 +118,17 @@ export const LeftPanel: React.FC = () => {
               {currentLesson.description}
             </p>
 
-            <div className="p-3 bg-mountainside/40 rounded-xl border border-apres/30 text-xs space-y-1">
-              <div className="text-[11px] font-mono font-semibold text-arctic flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Explanation:
+            <div className="p-3.5 bg-gradient-to-r from-emerald-950/50 via-midnight to-mountainside border border-emerald-500/40 rounded-xl text-xs space-y-1.5 shadow-md">
+              <div className="text-[11px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" /> User Explainable Concept:
               </div>
-              <p className="text-apres leading-normal">{currentLesson.explanation}</p>
+              <p className="text-emerald-200 font-sans leading-relaxed">
+                {currentLesson.explanation}
+              </p>
             </div>
 
-            <div className="p-3 bg-cyan-950/30 border border-cyan-500/30 rounded-xl text-xs text-cyan-300">
-              <span className="font-bold">Action Hint:</span> {currentLesson.actionHint}
+            <div className="p-3 bg-cyan-950/40 border border-cyan-500/40 rounded-xl text-xs text-cyan-300 font-mono">
+              <span className="font-bold text-cyan-200">Interactive Action:</span> {currentLesson.actionHint}
             </div>
 
             {/* Lesson Pagination Controls */}

@@ -164,6 +164,11 @@ const profileSlice = createSlice({
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.profile = action.payload;
+        if (action.payload) {
+          try {
+            localStorage.setItem('user', JSON.stringify(action.payload));
+          } catch (e) {}
+        }
       })
       .addCase(fetchProfile.rejected, (state, action) => {
         state.loading = false;
@@ -173,6 +178,11 @@ const profileSlice = createSlice({
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.profile = { ...state.profile, ...action.payload } as UserProfile;
         state.isEditing = false;
+        if (state.profile) {
+          try {
+            localStorage.setItem('user', JSON.stringify(state.profile));
+          } catch (e) {}
+        }
       })
       // Upload Avatar
       .addCase(uploadAvatar.fulfilled, (state, action) => {
