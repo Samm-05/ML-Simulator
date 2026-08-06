@@ -10,13 +10,22 @@ const RefreshTokenSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema(
   {
     email: { type: String, unique: true, sparse: true, lowercase: true, trim: true, required: true },
+    username: { type: String, trim: true, default: '' },
     password: { type: String, required: true },
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, required: true, trim: true },
     role: { type: String, enum: ['student', 'admin', 'instructor'], default: 'student' },
     avatar: { type: String, default: '' },
     institution: { type: String, default: '' },
+    college: { type: String, default: '' },
+    university: { type: String, default: '' },
+    country: { type: String, default: '' },
     bio: { type: String, default: '' },
+    github: { type: String, default: '' },
+    linkedin: { type: String, default: '' },
+    portfolio: { type: String, default: '' },
+    skills: [{ type: String }],
+    interests: [{ type: String }],
     points: { type: Number, default: 0 },
     badges: [
       {
@@ -31,13 +40,35 @@ const UserSchema = new mongoose.Schema(
     joinedAt: { type: Date, default: Date.now },
     lastActive: { type: Date, default: Date.now },
     isEmailVerified: { type: Boolean, default: true },
+    twoFactorEnabled: { type: Boolean, default: false },
     settings: {
       theme: { type: String, enum: ['light', 'dark', 'system'], default: 'dark' },
+      accentColor: { type: String, default: 'cyan' },
+      animationIntensity: { type: String, enum: ['low', 'normal', 'high'], default: 'normal' },
+      reduceMotion: { type: Boolean, default: false },
+      compactMode: { type: Boolean, default: false },
       emailNotifications: { type: Boolean, default: true },
       pushNotifications: { type: Boolean, default: true },
       defaultAlgorithmView: { type: String, enum: ['2d', '3d'], default: '2d' },
       animationSpeed: { type: Number, default: 1 },
       showExplanations: { type: Boolean, default: true },
+      learningMode: { type: String, enum: ['guided', 'freeform', 'fast'], default: 'guided' },
+      autoPlaySimulations: { type: Boolean, default: true },
+      simulationSpeed: { type: Number, default: 1 },
+      defaultPlayground: { type: String, default: 'linear-lab' },
+      mathRendering: { type: String, enum: ['katex', 'mathjax', 'standard'], default: 'katex' },
+      autoResume: { type: Boolean, default: true },
+      language: { type: String, default: 'en' },
+      difficultyLevel: { type: String, enum: ['beginner', 'intermediate', 'advanced'], default: 'intermediate' },
+      notifications: {
+        practiceReminder: { type: Boolean, default: true },
+        dailyReminder: { type: Boolean, default: true },
+        leaderboardUpdates: { type: Boolean, default: true },
+        weeklyReport: { type: Boolean, default: true },
+        achievementNotifications: { type: Boolean, default: true },
+        emailNotifications: { type: Boolean, default: true },
+        productUpdates: { type: Boolean, default: false },
+      },
     },
     progress: {
       algorithms: [
@@ -66,12 +97,9 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Indexes for performance
 UserSchema.index({ points: -1 });
-UserSchema.index({ email: 1 });
 UserSchema.index({ createdAt: -1 });
 
-// Hash password before save
 UserSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
   const salt = await bcrypt.genSalt(10);
@@ -84,14 +112,13 @@ UserSchema.methods.comparePassword = function (candidate) {
 
 UserSchema.methods.generatePasswordReset = function () {
   this.passwordResetToken = crypto.randomBytes(20).toString('hex');
-  this.passwordResetExpires = Date.now() + 3600000; // 1 hour
+  this.passwordResetExpires = Date.now() + 3600000;
 };
 
 UserSchema.methods.generateEmailVerification = function () {
   this.emailVerificationToken = crypto.randomBytes(20).toString('hex');
 };
 
-// Transform to sanitize sensitive fields when serialized to JSON
 UserSchema.set('toJSON', {
   transform: (doc, ret) => {
     ret.id = ret._id ? ret._id.toString() : undefined;

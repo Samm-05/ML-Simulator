@@ -5,7 +5,6 @@ import {
   Menu,
   X,
   Brain,
-  Bell,
   User,
   LogOut,
   Settings,
@@ -17,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { logout } from '../../features/auth/authSlice';
+import NotificationDropdown from './NotificationDropdown';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -127,10 +127,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <>
-                <button className="p-2 rounded-xl text-slopes hover:text-arctic hover:bg-mountainside/60 transition-colors relative">
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-info rounded-full"></span>
-                </button>
+                <NotificationDropdown />
 
                 <div className="relative">
                   <button

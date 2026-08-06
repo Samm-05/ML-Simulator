@@ -10,6 +10,7 @@ const dashboardRoutes = require('./routes/dashboard');
 const leaderboardRoutes = require('./routes/leaderboard');
 const simulationRoutes = require('./routes/simulations');
 const practiceRoutes = require('./routes/practice');
+const notificationRoutes = require('./routes/notifications');
 
 const app = express();
 
@@ -22,6 +23,8 @@ const allowedOrigins = new Set(
   [
     'http://localhost:3000',
     'http://localhost:3001',
+    'http://localhost:3002',
+    'http://localhost:3003',
     'http://localhost:3015',
     'http://localhost:3016',
     'http://localhost:3017',
@@ -36,7 +39,6 @@ const allowedOrigins = new Set(
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow non-browser clients (Postman, mobile apps) or configured browser origins
       if (!origin || allowedOrigins.has(origin)) {
         callback(null, true);
         return;
@@ -53,10 +55,12 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // API Route Prefix Definitions
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/settings', profileRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/simulations', simulationRoutes);
 app.use('/api/practice', practiceRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Base Health check endpoint
 app.get('/', (req, res) => {
@@ -81,7 +85,7 @@ mongoose
     const host = mongoose.connection.host;
     const dbName = mongoose.connection.name;
     console.log(`✅ [DATABASE CONNECTED] Successfully connected to MongoDB cluster: ${host} (Database: ${dbName})`);
-    
+
     app.listen(PORT, () => console.log(`🚀 [SERVER RUNNING] ML Visual Lab API listening on port ${PORT}`));
   })
   .catch((err) => {

@@ -18,6 +18,7 @@ import PracticePage from '../features/practice/PracticePage';
 import QuizPage from '../features/practice/pages/QuizPage';
 import LeaderboardPage from '../features/leaderboard/LeaderboardPage';
 import ProfilePage from '../features/profile/ProfilePage';
+import SettingsPage from '../features/settings/SettingsPage';
 
 import GradientDescentLab from '../features/gradientDescent/GradientDescentLab';
 import LinearRegressionLab from '../features/linearRegression/LinearRegressionLab';
@@ -75,6 +76,7 @@ const AppRoutes: React.FC = () => {
 
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
         {/* Default Routes */}
