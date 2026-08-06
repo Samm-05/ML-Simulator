@@ -7,20 +7,23 @@ import { motion } from 'framer-motion';
 import { User, Mail, Lock, ArrowRight, Brain } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { register } from './authSlice';
+import { fetchGlobalLeaderboard } from '../leaderboard/leaderboardSlice';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Card from '../../components/ui/Card';
 
-const registerSchema = z.object({
-  firstName: z.string().min(2, 'First name must be at least 2 characters'),
-  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-});
+const registerSchema = z
+  .object({
+    firstName: z.string().min(2, 'First name must be at least 2 characters'),
+    lastName: z.string().min(2, 'Last name must be at least 2 characters'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
@@ -41,6 +44,8 @@ const Register: React.FC = () => {
     const { confirmPassword, ...userData } = data;
     const result = await dispatch(register(userData));
     if (register.fulfilled.match(result)) {
+      // Immediately refresh leaderboard state so new user registers on global rank
+      dispatch(fetchGlobalLeaderboard());
       navigate('/dashboard');
     }
   };

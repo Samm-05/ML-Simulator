@@ -1,15 +1,22 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { leaderboardAPI } from './leaderboardAPI';
 
-interface LeaderboardEntry {
+export interface LeaderboardEntry {
   rank: number;
   userId: string;
   name: string;
   avatar?: string;
+  role?: string;
+  xp: number;
   points: number;
-  algorithmsCompleted: number;
+  level: number;
   streak: number;
+  completedModules: number;
+  completedLabs: number;
+  completedQuizzes: number;
   badges: string[];
+  progressPercent: number;
+  lastActive?: string;
 }
 
 interface LeaderboardState {
@@ -38,6 +45,19 @@ const initialState: LeaderboardState = {
   error: null,
 };
 
+const extractEntries = (payload: any): LeaderboardEntry[] => {
+  if (!payload) return [];
+  if (Array.isArray(payload.entries)) return payload.entries;
+  if (Array.isArray(payload)) return payload;
+  return [];
+};
+
+const extractUserRank = (payload: any): number => {
+  if (payload && typeof payload.userRank === 'number') return payload.userRank;
+  if (payload && typeof payload.rank === 'number') return payload.rank;
+  return 0;
+};
+
 export const fetchGlobalLeaderboard = createAsyncThunk(
   'leaderboard/fetchGlobal',
   async (_, { rejectWithValue }) => {
@@ -45,7 +65,7 @@ export const fetchGlobalLeaderboard = createAsyncThunk(
       const response = await leaderboardAPI.getGlobal();
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch leaderboard');
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch leaderboard from server');
     }
   }
 );
@@ -87,8 +107,8 @@ const leaderboardSlice = createSlice({
       })
       .addCase(fetchGlobalLeaderboard.fulfilled, (state, action) => {
         state.loading = false;
-        state.global = action.payload.entries;
-        state.userRank.global = action.payload.userRank;
+        state.global = extractEntries(action.payload);
+        state.userRank.global = extractUserRank(action.payload);
       })
       .addCase(fetchGlobalLeaderboard.rejected, (state, action) => {
         state.loading = false;
@@ -96,14 +116,14 @@ const leaderboardSlice = createSlice({
       })
       // Weekly Leaderboard
       .addCase(fetchWeeklyLeaderboard.fulfilled, (state, action) => {
-        state.weekly = action.payload.entries;
-        state.userRank.weekly = action.payload.userRank;
+        state.weekly = extractEntries(action.payload);
+        state.userRank.weekly = extractUserRank(action.payload);
       })
       // Algorithm Leaderboard
       .addCase(fetchAlgorithmLeaderboard.fulfilled, (state, action) => {
         const { algorithm, data } = action.payload;
-        state.byAlgorithm[algorithm] = data.entries;
-        state.userRank.byAlgorithm[algorithm] = data.userRank;
+        state.byAlgorithm[algorithm] = extractEntries(data);
+        state.userRank.byAlgorithm[algorithm] = extractUserRank(data);
       });
   },
 });

@@ -7,6 +7,7 @@ import {
   Users,
   Calendar,
   Filter,
+  AlertCircle,
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -20,7 +21,7 @@ import LeaderboardTable from './LeaderboardTable';
 
 const LeaderboardPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { global, weekly, byAlgorithm, userRank, loading } = useAppSelector((state) => state.leaderboard);
+  const { global, weekly, byAlgorithm, userRank, loading, error } = useAppSelector((state) => state.leaderboard);
   const { user } = useAppSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState<'global' | 'weekly' | 'algorithms'>('global');
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>('linear-regression');
@@ -43,6 +44,18 @@ const LeaderboardPage: React.FC = () => {
     { value: 'neural-network', label: 'Neural Network' },
   ];
 
+  const currentUserId = user?.id || (user as any)?._id;
+  const currentGlobalList = Array.isArray(global) ? global : [];
+  const currentWeeklyList = Array.isArray(weekly) ? weekly : [];
+  const currentAlgoList = selectedAlgorithm && Array.isArray(byAlgorithm[selectedAlgorithm]) ? byAlgorithm[selectedAlgorithm] : [];
+
+  const activeEntries =
+    activeTab === 'global'
+      ? currentGlobalList
+      : activeTab === 'weekly'
+      ? currentWeeklyList
+      : currentAlgoList;
+
   return (
     <PageContainer>
       {/* Header */}
@@ -55,9 +68,21 @@ const LeaderboardPage: React.FC = () => {
           Leaderboard
         </h1>
         <p className="text-secondary-600 dark:text-secondary-400">
-          Compete with other learners and climb the ranks
+          Compete with registered learners and track real-time machine learning progress
         </p>
       </motion.div>
+
+      {/* Error Banner */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center space-x-3 text-red-500"
+        >
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          <span className="text-sm font-medium">{error}</span>
+        </motion.div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -73,7 +98,7 @@ const LeaderboardPage: React.FC = () => {
                   Global Rank
                 </p>
                 <p className="text-3xl font-bold text-secondary-900 dark:text-white">
-                  #{userRank.global}
+                  #{userRank?.global || 0}
                 </p>
               </div>
               <div className="p-3 bg-primary-500/10 rounded-xl">
@@ -95,7 +120,7 @@ const LeaderboardPage: React.FC = () => {
                   Weekly Rank
                 </p>
                 <p className="text-3xl font-bold text-secondary-900 dark:text-white">
-                  #{userRank.weekly}
+                  #{userRank?.weekly || 0}
                 </p>
               </div>
               <div className="p-3 bg-accent-500/10 rounded-xl">
@@ -114,10 +139,10 @@ const LeaderboardPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-secondary-500 dark:text-secondary-400 mb-1">
-                  Total Learners
+                  Active Learners
                 </p>
                 <p className="text-3xl font-bold text-secondary-900 dark:text-white">
-                  {global.length}+
+                  {currentGlobalList.length}
                 </p>
               </div>
               <div className="p-3 bg-warning/10 rounded-xl">
@@ -135,7 +160,7 @@ const LeaderboardPage: React.FC = () => {
             onClick={() => setActiveTab('global')}
             className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all ${
               activeTab === 'global'
-                ? 'bg-primary-600 text-white'
+                ? 'bg-primary-600 text-white shadow-lg'
                 : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700'
             }`}
           >
@@ -146,7 +171,7 @@ const LeaderboardPage: React.FC = () => {
             onClick={() => setActiveTab('weekly')}
             className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all ${
               activeTab === 'weekly'
-                ? 'bg-primary-600 text-white'
+                ? 'bg-primary-600 text-white shadow-lg'
                 : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700'
             }`}
           >
@@ -157,7 +182,7 @@ const LeaderboardPage: React.FC = () => {
             onClick={() => setActiveTab('algorithms')}
             className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all ${
               activeTab === 'algorithms'
-                ? 'bg-primary-600 text-white'
+                ? 'bg-primary-600 text-white shadow-lg'
                 : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700'
             }`}
           >
@@ -187,23 +212,12 @@ const LeaderboardPage: React.FC = () => {
         </Card>
       )}
 
-      {/* Leaderboard Table */}
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-        </div>
-      ) : (
-        <LeaderboardTable
-          entries={
-            activeTab === 'global'
-              ? global
-              : activeTab === 'weekly'
-              ? weekly
-              : (selectedAlgorithm && byAlgorithm[selectedAlgorithm]) || []
-          }
-          currentUserId={user?.id}
-        />
-      )}
+      {/* Leaderboard Table Component */}
+      <LeaderboardTable
+        entries={activeEntries}
+        currentUserId={currentUserId}
+        loading={loading}
+      />
     </PageContainer>
   );
 };
