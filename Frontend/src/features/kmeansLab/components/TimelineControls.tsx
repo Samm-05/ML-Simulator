@@ -44,10 +44,10 @@ export const TimelineControls: React.FC = () => {
         <Info className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
         <div className="space-y-0.5">
           <p className="font-bold text-indigo-300">
-            Step {kmeans.currentStep}: Optimization Narrative
+            Iteration {kmeans.currentStep}: Optimization Narrative & Phase
           </p>
           <p className="text-slopes leading-relaxed">
-            {currentSnapshot?.explanation || 'Click Play or Step Forward to run K-Means iteration.'}
+            {currentSnapshot?.explanation || 'Click Play Simulation or Step Forward to run K-Means iteration.'}
           </p>
         </div>
       </div>
@@ -78,13 +78,14 @@ export const TimelineControls: React.FC = () => {
           <button
             type="button"
             onClick={() => dispatch(togglePlayPause())}
-            disabled={kmeans.isConverged}
-            title="Play/Pause [Space]"
+            title="Play / Restart Simulation [Space]"
             className={`
               flex items-center space-x-2 px-5 py-2.5 rounded-xl font-bold text-xs shadow-soft transition-all cursor-pointer
               ${
                 kmeans.isPlaying
                   ? 'bg-amber-500 hover:bg-amber-400 text-midnight'
+                  : kmeans.isConverged
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
                   : 'bg-indigo-600 hover:bg-indigo-500 text-white'
               }
             `}
@@ -93,6 +94,11 @@ export const TimelineControls: React.FC = () => {
               <>
                 <Pause className="w-4 h-4" />
                 <span>Pause</span>
+              </>
+            ) : kmeans.isConverged ? (
+              <>
+                <RotateCcw className="w-4 h-4" />
+                <span>Restart Simulation</span>
               </>
             ) : (
               <>
