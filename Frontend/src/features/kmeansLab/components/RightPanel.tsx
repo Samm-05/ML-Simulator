@@ -17,7 +17,7 @@ import {
   TrendingDown,
   Clock,
 } from 'lucide-react';
-import { ExperimentReportModal } from './ExperimentReportModal';
+import { UniversalReportModal } from '../../../components/reports/UniversalReportModal';
 
 export const RightPanel: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -43,12 +43,17 @@ export const RightPanel: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 select-none">
       {/* Live Metrics Panel Card */}
       <Card className="p-5 space-y-4 border-mountainside bg-midnight/90 backdrop-blur-xl shadow-hard">
-        <div className="flex items-center space-x-2 text-emerald-400 font-bold text-sm uppercase tracking-wider">
-          <Activity className="w-4 h-4" />
-          <span>Live Metrics Panel</span>
+        <div className="flex items-center justify-between border-b border-mountainside pb-2">
+          <div className="flex items-center space-x-2 text-emerald-400 font-bold text-sm uppercase tracking-wider">
+            <Activity className="w-4 h-4" />
+            <span>Live Metrics Panel</span>
+          </div>
+          <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+            +50 XP
+          </span>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -60,38 +65,32 @@ export const RightPanel: React.FC = () => {
           </div>
 
           <div className="p-3 rounded-xl bg-mountainside/40 border border-mountainside">
-            <p className="text-[10px] uppercase font-mono text-apres">WCSS / Inertia</p>
-            <p className="text-lg font-bold font-mono text-indigo-400">
-              {kmeans.wcss > 0 ? kmeans.wcss.toFixed(1) : '0.0'}
+            <p className="text-[10px] uppercase font-mono text-apres">Status</p>
+            <p className="text-sm font-bold font-mono text-cyan-400 capitalize">
+              {kmeans.status}
             </p>
           </div>
 
           <div className="p-3 rounded-xl bg-mountainside/40 border border-mountainside">
-            <p className="text-[10px] uppercase font-mono text-apres">Silhouette Score</p>
-            <p className="text-lg font-bold font-mono text-emerald-400">
+            <p className="text-[10px] uppercase font-mono text-apres">WCSS (Inertia)</p>
+            <p className="text-base font-bold font-mono text-indigo-400">
+              {kmeans.wcss.toFixed(2)}
+            </p>
+          </div>
+
+          <div className="p-3 rounded-xl bg-mountainside/40 border border-mountainside">
+            <p className="text-[10px] uppercase font-mono text-apres">Silhouette</p>
+            <p className="text-base font-bold font-mono text-emerald-400">
               {kmeans.silhouetteScore.toFixed(2)}
-            </p>
-          </div>
-
-          <div className="p-3 rounded-xl bg-mountainside/40 border border-mountainside">
-            <p className="text-[10px] uppercase font-mono text-apres">Convergence Status</p>
-            <p className="text-xs font-bold font-mono mt-1">
-              {kmeans.isConverged ? (
-                <span className="text-emerald-400">✓ Converged</span>
-              ) : kmeans.isPlaying ? (
-                <span className="text-amber-400 animate-pulse">● Running</span>
-              ) : (
-                <span className="text-apres">Pending</span>
-              )}
             </p>
           </div>
         </div>
 
-        {/* Action Buttons: Save & Export Report */}
+        {/* Action Buttons */}
         <div className="space-y-2 pt-2 border-t border-mountainside">
           <Button
             variant="primary"
-            className="w-full justify-center bg-indigo-600 hover:bg-indigo-500 text-xs font-bold py-2.5"
+            className="w-full justify-center bg-indigo-600 hover:bg-indigo-500 text-xs font-bold py-2.5 shadow-soft cursor-pointer"
             onClick={handleSave}
             isLoading={kmeans.isSaving}
             icon={<Save className="w-4 h-4" />}
@@ -101,11 +100,11 @@ export const RightPanel: React.FC = () => {
 
           <Button
             variant="outline"
-            className="w-full justify-center text-xs font-bold py-2.5"
+            className="w-full justify-center text-xs font-bold py-2.5 border-mountainside text-arctic hover:bg-mountainside/60 cursor-pointer"
             onClick={() => setShowReportModal(true)}
             icon={<FileText className="w-4 h-4 text-cyan-400" />}
           >
-            Generate PDF Experiment Report
+            Download Detailed Report (PDF) 📄
           </Button>
         </div>
       </Card>
@@ -150,9 +149,9 @@ export const RightPanel: React.FC = () => {
         </div>
       </Card>
 
-      {/* Report Modal Component */}
+      {/* Universal Detailed Report Modal */}
       {showReportModal && (
-        <ExperimentReportModal onClose={() => setShowReportModal(false)} />
+        <UniversalReportModal algorithm="kmeans" onClose={() => setShowReportModal(false)} />
       )}
     </div>
   );

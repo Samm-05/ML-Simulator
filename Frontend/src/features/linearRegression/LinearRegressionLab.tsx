@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { togglePlayPause, stepForward, stepBackward, resetPlayback, setParams } from './linearRegressionSlice';
 import { LeftPanel } from './components/LeftPanel';
@@ -11,61 +11,13 @@ import { MathFormulaPanel } from './components/MathFormulaPanel';
 import { ExplanationPanel } from './components/ExplanationPanel';
 import { ScrollStorytelling } from './components/ScrollStorytelling';
 import RecentExperimentsPanel from '../../components/experiments/RecentExperimentsPanel';
-import { experimentService, SavedExperiment } from '../../services/experimentService';
-import Button from '../../components/ui/Button';
-import { toast } from 'react-hot-toast';
-import { Brain, Save } from 'lucide-react';
+import { SavedExperiment } from '../../services/experimentService';
+import { Brain } from 'lucide-react';
 
 const LinearRegressionLab: React.FC = () => {
   const dispatch = useAppDispatch();
   const lrState = useAppSelector((state) => state.linearRegression);
   const comparisonMode = lrState?.comparisonMode ?? false;
-  const params = lrState?.params;
-  const steps = lrState?.steps ?? [];
-  const currentStepIndex = lrState?.currentStepIndex ?? 0;
-  const [saving, setSaving] = useState(false);
-
-  const currentStep = steps[currentStepIndex] || steps[0] || {
-    w: 0,
-    b: 0,
-    mseLoss: 0,
-    gradW: 0,
-    gradB: 0,
-  };
-
-  // Save Experiment Handler
-  const handleSaveExperiment = async () => {
-    if (!params) return;
-    setSaving(true);
-    const toastId = toast.loading('Saving Linear Regression experiment...');
-    try {
-      await experimentService.saveExperiment({
-        algorithm: 'linear-regression',
-        title: `Linear Regression (α=${params.learningRate}, Epochs=${params.epochs})`,
-        parameters: {
-          learningRate: params.learningRate,
-          epochs: params.epochs,
-          datasetSize: params.datasetSize,
-          noise: params.noise,
-          regularization: params.regularization,
-          wInitial: params.wInitial,
-          bInitial: params.bInitial,
-        },
-        metrics: {
-          loss: currentStep.mseLoss,
-          finalWeight: currentStep.w,
-          finalBias: currentStep.b,
-          totalSteps: steps.length,
-          accuracy: Math.max(0.6, 1 - currentStep.mseLoss),
-        },
-      });
-      toast.success('Linear Regression experiment saved to MongoDB! +50 XP', { id: toastId });
-    } catch (err: any) {
-      toast.error('Failed to save experiment', { id: toastId });
-    } finally {
-      setSaving(false);
-    }
-  };
 
   // Restore Experiment Handler
   const handleLoadExperiment = (exp: SavedExperiment) => {
@@ -121,16 +73,6 @@ const LinearRegressionLab: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button
-            variant="primary"
-            onClick={handleSaveExperiment}
-            isLoading={saving}
-            className="bg-amber-500 hover:bg-amber-400 text-midnight font-bold text-xs"
-            icon={<Save className="w-4 h-4" />}
-          >
-            Save Experiment
-          </Button>
-
           <div className="text-xs text-apres font-mono hidden lg:block text-right">
             <div>Shortcuts: [Space] Play/Pause</div>
             <div>[Left/Right] Step | [R] Reset</div>
