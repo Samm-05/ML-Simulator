@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { setConfig } from './overfittingSlice';
 import PageContainer from '../../components/layout/PageContainer';
 import Overfitting3DScene from './components/Overfitting3DScene';
 import PredictionCurveCanvas from './components/PredictionCurveCanvas';
@@ -9,13 +10,43 @@ import BiasVarianceChart from './components/BiasVarianceChart';
 import ControlPanel from './components/ControlPanel';
 import MathExplanationPanel from './components/MathExplanationPanel';
 import GuidedStepsPanel from './components/GuidedStepsPanel';
-import { Brain, ArrowLeft } from 'lucide-react';
+import RecentExperimentsPanel from '../../components/experiments/RecentExperimentsPanel';
+import { experimentService, SavedExperiment } from '../../services/experimentService';
+import Button from '../../components/ui/Button';
+import { toast } from 'react-hot-toast';
+import { Brain, ArrowLeft, Save } from 'lucide-react';
 import gsap from 'gsap';
 
 export const OverfittingLab: React.FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { result, config } = useAppSelector((state) => state.overfitting);
   const headerRef = useRef<HTMLDivElement>(null);
+  const [saving, setSaving] = useState(false);
+
+  const handleSaveExperiment = async () => {
+    setSaving(true);
+    const toastId = toast.loading('Saving Overfitting Lab experiment...');
+    try {
+      await experimentService.saveExperiment({
+        algorithm: 'overfitting',
+        title: `Overfitting Lab (Degree=${config.degree}, λ=${config.lambdaReg})`,
+        parameters: config,
+        metrics: result,
+      });
+      toast.success('Overfitting Lab experiment saved to MongoDB! +50 XP', { id: toastId });
+    } catch (err) {
+      toast.error('Failed to save experiment', { id: toastId });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleLoadExperiment = (exp: SavedExperiment) => {
+    if (exp.parameters) {
+      dispatch(setConfig(exp.parameters));
+    }
+  };
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -60,8 +91,18 @@ export const OverfittingLab: React.FC = () => {
           </div>
         </div>
 
-        {/* Current Metrics Header Bar */}
+        {/* Current Metrics Header Bar & Save Action */}
         <div className="lab-reveal flex items-center gap-3 font-mono text-xs">
+          <Button
+            variant="primary"
+            onClick={handleSaveExperiment}
+            isLoading={saving}
+            className="bg-amber-500 hover:bg-amber-400 text-midnight font-bold text-xs"
+            icon={<Save className="w-4 h-4" />}
+          >
+            Save Experiment
+          </Button>
+
           <div className="px-3 py-1.5 rounded-2xl bg-mountainside/50 border border-apres/30 flex items-center gap-2">
             <span className="text-apres">Train Loss:</span>
             <span className="text-emerald-400 font-bold">{result.trainLoss.toFixed(4)}</span>
@@ -122,6 +163,9 @@ export const OverfittingLab: React.FC = () => {
             <BiasVarianceChart />
           </div>
         </div>
+
+        {/* Algorithm Specific Experiments History */}
+        <RecentExperimentsPanel algorithm="overfitting" onLoadExperiment={handleLoadExperiment} />
       </main>
     </PageContainer>
   );

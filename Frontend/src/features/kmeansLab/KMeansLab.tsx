@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   togglePlayPause,
   stepForward,
   stepBackward,
   resetPlayback,
+  setK,
+  setInitializationMethod,
+  setDatasetPreset,
 } from './kmeansSlice';
 import { LeftPanel } from './components/LeftPanel';
 import { Center3DScene } from './components/Center3DScene';
@@ -13,11 +16,21 @@ import { TimelineControls } from './components/TimelineControls';
 import { LiveGraphsPanel } from './components/LiveGraphsPanel';
 import { MathFormulaPanel } from './components/MathFormulaPanel';
 import { ExplanationPanel } from './components/ExplanationPanel';
+import RecentExperimentsPanel from '../../components/experiments/RecentExperimentsPanel';
+import { SavedExperiment } from '../../services/experimentService';
 import { Network } from 'lucide-react';
 
 const KMeansLab: React.FC = () => {
   const dispatch = useAppDispatch();
   const kmeans = useAppSelector((state) => state.kmeans);
+
+  const handleLoadExperiment = (exp: SavedExperiment) => {
+    if (exp.parameters) {
+      if (exp.parameters.k) dispatch(setK(exp.parameters.k));
+      if (exp.parameters.initializationMethod) dispatch(setInitializationMethod(exp.parameters.initializationMethod));
+      if (exp.parameters.datasetPreset) dispatch(setDatasetPreset(exp.parameters.datasetPreset));
+    }
+  };
 
   // Global Keyboard Shortcuts (Space: Play/Pause, Arrows: Step, R: Reset)
   useEffect(() => {
@@ -85,9 +98,10 @@ const KMeansLab: React.FC = () => {
           <Center3DScene />
         </div>
 
-        {/* Right Panel */}
-        <div className="xl:col-span-3">
+        {/* Right Panel & Algorithm History */}
+        <div className="xl:col-span-3 space-y-6">
           <RightPanel />
+          <RecentExperimentsPanel algorithm="kmeans" onLoadExperiment={handleLoadExperiment} />
         </div>
       </div>
 

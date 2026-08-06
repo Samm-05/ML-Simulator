@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   setViewMode,
   setIsPlaying,
   setCurrentEpoch,
   resetSimulation,
+  updateConfig,
 } from './logisticRegressionSlice';
 import { ViewMode } from './types';
 import LeftPanel from './components/LeftPanel';
@@ -15,6 +16,10 @@ import SigmoidExplorer from './components/SigmoidExplorer';
 import ComparisonView from './components/ComparisonView';
 import UnderfittingOverfittingView from './components/UnderfittingOverfittingView';
 import PageContainer from '../../components/layout/PageContainer';
+import RecentExperimentsPanel from '../../components/experiments/RecentExperimentsPanel';
+import { experimentService, SavedExperiment } from '../../services/experimentService';
+import Button from '../../components/ui/Button';
+import { toast } from 'react-hot-toast';
 import {
   Brain,
   ArrowLeft,
@@ -22,17 +27,45 @@ import {
   Activity,
   Layers,
   Eye,
+  Save,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const LogisticRegressionLab: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { viewMode, isPlaying, currentEpoch, trajectory } = useAppSelector(
+  const { viewMode, isPlaying, currentEpoch, trajectory, config, points } = useAppSelector(
     (state) => state.logisticRegression
   );
+  const [saving, setSaving] = useState(false);
 
   const maxEpoch = trajectory.length > 0 ? trajectory.length - 1 : 0;
+  const currentSnapshot = trajectory[currentEpoch] || trajectory[0] || {};
+
+  const handleSaveExperiment = async () => {
+    setSaving(true);
+    const toastId = toast.loading('Saving Logistic Regression experiment...');
+    try {
+      await experimentService.saveExperiment({
+        algorithm: 'logistic-regression',
+        title: `Logistic Regression (α=${config.learningRate}, Threshold=${config.threshold})`,
+        parameters: config,
+        dataset: { count: points.length },
+        metrics: currentSnapshot,
+      });
+      toast.success('Logistic Regression experiment saved to MongoDB! +50 XP', { id: toastId });
+    } catch (err) {
+      toast.error('Failed to save experiment', { id: toastId });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleLoadExperiment = (exp: SavedExperiment) => {
+    if (exp.parameters) {
+      dispatch(updateConfig(exp.parameters));
+    }
+  };
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -56,7 +89,7 @@ export const LogisticRegressionLab: React.FC = () => {
   }, [isPlaying, currentEpoch, maxEpoch, dispatch]);
 
   return (
-    <PageContainer className="relative min-h-screen bg-midnight text-arctic py-4 px-4 space-y-4 font-sans">
+    <PageContainer className="relative min-h-screen bg-midnight text-arctic py-4 px-4 space-y-4 font-sans select-none">
       {/* Top Header Bar */}
       <header className="flex flex-col md:flex-row items-center justify-between gap-4 p-3 bg-midnight/90 backdrop-blur-md rounded-3xl border border-apres/30 shadow-2xl">
         <div className="flex items-center gap-3">
@@ -83,29 +116,41 @@ export const LogisticRegressionLab: React.FC = () => {
           </div>
         </div>
 
-        {/* View Mode Navigation Tabs (Quiz Tab Removed) */}
-        <div className="flex items-center p-1 bg-mountainside/40 rounded-2xl border border-apres/30 overflow-x-auto scrollbar-hide">
-          {(
-            [
-              ['playground', 'Playground', Sliders],
-              ['sigmoid', 'Sigmoid Curve', Activity],
-              ['comparison', 'Model Compare', Eye],
-              ['underfitting', 'Model Fit', Layers],
-            ] as [ViewMode, string, React.ElementType][]
-          ).map(([mode, label, Icon]) => (
-            <button
-              key={mode}
-              onClick={() => dispatch(setViewMode(mode))}
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
-                viewMode === mode
-                  ? 'bg-arctic text-midnight font-bold shadow-md'
-                  : 'text-slopes hover:text-arctic'
-              }`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              {label}
-            </button>
-          ))}
+        <div className="flex items-center space-x-3">
+          <Button
+            variant="primary"
+            onClick={handleSaveExperiment}
+            isLoading={saving}
+            className="bg-cyan-500 hover:bg-cyan-400 text-midnight font-bold text-xs"
+            icon={<Save className="w-4 h-4" />}
+          >
+            Save Experiment
+          </Button>
+
+          {/* View Mode Navigation Tabs */}
+          <div className="flex items-center p-1 bg-mountainside/40 rounded-2xl border border-apres/30 overflow-x-auto scrollbar-hide">
+            {(
+              [
+                ['playground', 'Playground', Sliders],
+                ['sigmoid', 'Sigmoid Curve', Activity],
+                ['comparison', 'Model Compare', Eye],
+                ['underfitting', 'Model Fit', Layers],
+              ] as [ViewMode, string, React.ElementType][]
+            ).map(([mode, label, Icon]) => (
+              <button
+                key={mode}
+                onClick={() => dispatch(setViewMode(mode))}
+                className={`px-3.5 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                  viewMode === mode
+                    ? 'bg-arctic text-midnight font-bold shadow-md'
+                    : 'text-slopes hover:text-arctic'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
 
@@ -133,6 +178,9 @@ export const LogisticRegressionLab: React.FC = () => {
 
             {/* Bottom Playback & Metrics Panel */}
             <BottomPanel />
+
+            {/* Algorithm Specific Recent Experiments */}
+            <RecentExperimentsPanel algorithm="logistic-regression" onLoadExperiment={handleLoadExperiment} />
           </div>
         )}
 
