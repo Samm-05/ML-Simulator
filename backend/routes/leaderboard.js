@@ -4,23 +4,25 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const lb = require('../controllers/leaderboardController');
 
-// Optional Authentication Middleware: populates req.user if token provided, but lets guests proceed
+// Optional Authentication Middleware: populates req.user if token provided, but lets guests proceed smoothly
 const optionalAuthenticate = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return next();
-
-  const token = authHeader.split(' ')[1];
-  if (!token) return next();
-
   try {
-    const secret = process.env.ACCESS_TOKEN_SECRET || 'supersecretaccesstoken';
-    const payload = jwt.verify(token, secret);
-    const user = await User.findById(payload.id);
-    if (user) {
-      req.user = user;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      if (token) {
+        const secret = process.env.ACCESS_TOKEN_SECRET || 'supersecretaccesstoken';
+        const payload = jwt.verify(token, secret);
+        if (payload && payload.id) {
+          const user = await User.findById(payload.id).select('_id firstName lastName email role');
+          if (user) {
+            req.user = user;
+          }
+        }
+      }
     }
   } catch (err) {
-    // Ignore invalid token for optional reading
+    // Ignore invalid/expired token for optional reading endpoints
   }
   next();
 };
