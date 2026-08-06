@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   FlaskConical,
+  GraduationCap,
   Brain,
   Target,
   Trophy,
@@ -25,6 +26,7 @@ const Sidebar: React.FC = () => {
 
   const mainNavItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/coach', icon: GraduationCap, label: 'ML Coach' },
     { path: '/playground', icon: FlaskConical, label: 'Playground' },
     { path: '/practice', icon: Target, label: 'Practice' },
     { path: '/leaderboard', icon: Trophy, label: 'Leaderboard' },

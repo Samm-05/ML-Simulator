@@ -11,11 +11,13 @@ import linearRegressionReducer from '../features/linearRegression/linearRegressi
 import logisticRegressionReducer from '../features/logisticRegression/logisticRegressionSlice';
 import neuralNetworkReducer from '../features/neuralNetwork/neuralNetworkSlice';
 import overfittingReducer from '../features/overfittingLab/overfittingSlice';
+import coachReducer from '../features/coach/coachSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     dashboard: dashboardReducer,
+    coach: coachReducer,
     gradientDescent: gradientDescentReducer,
     linearRegression: linearRegressionReducer,
     logisticRegression: logisticRegressionReducer,

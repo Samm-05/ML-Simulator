@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Menu, X, Brain, Bell, User, LogOut, Settings, FlaskConical } from 'lucide-react';
+import { Menu, X, Brain, Bell, User, LogOut, Settings, FlaskConical, GraduationCap } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { logout } from '../../features/auth/authSlice';
 
@@ -27,20 +27,20 @@ const Navbar: React.FC = () => {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-midnight/90 border-b border-mountainside/80 backdrop-blur-xl shadow-soft'
-          : 'bg-transparent border-b border-transparent'
+          ? 'bg-midnight/90 backdrop-blur-md border-b border-mountainside/80 shadow-soft'
+          : 'bg-midnight border-b border-mountainside'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="p-2 rounded-xl bg-mountainside border border-apres/40 text-arctic group-hover:border-slopes transition-colors">
-              <Brain className="w-5 h-5 text-slopes" />
+            <div className="w-10 h-10 rounded-xl bg-mountainside border border-apres/40 flex items-center justify-center shadow-soft group-hover:border-slopes transition-colors">
+              <Brain className="w-6 h-6 text-arctic group-hover:scale-105 transition-transform" />
             </div>
-            <span className="text-lg font-bold text-arctic tracking-tight group-hover:text-white transition-colors">
+            <span className="text-xl font-bold tracking-tight text-arctic group-hover:text-slopes transition-colors">
               ML Visual Lab
             </span>
           </Link>
@@ -57,6 +57,17 @@ const Navbar: React.FC = () => {
                 }
               >
                 Dashboard
+              </NavLink>
+              <NavLink
+                to="/coach"
+                className={({ isActive }) =>
+                  `text-sm font-medium transition-colors flex items-center gap-1.5 font-semibold ${
+                    isActive ? 'text-blue-400 font-bold border-b-2 border-blue-400 pb-0.5' : 'text-slopes hover:text-arctic'
+                  }`
+                }
+              >
+                <GraduationCap className="w-4 h-4 text-blue-400" />
+                ML Coach
               </NavLink>
               <NavLink
                 to="/playground"

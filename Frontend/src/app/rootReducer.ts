@@ -10,10 +10,12 @@ import gradientDescentReducer from '../features/gradientDescent/gradientDescentS
 import linearRegressionReducer from '../features/linearRegression/linearRegressionSlice';
 import logisticRegressionReducer from '../features/logisticRegression/logisticRegressionSlice';
 import neuralNetworkReducer from '../features/neuralNetwork/neuralNetworkSlice';
+import coachReducer from '../features/coach/coachSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   dashboard: dashboardReducer,
+  coach: coachReducer,
   gradientDescent: gradientDescentReducer,
   linearRegression: linearRegressionReducer,
   logisticRegression: logisticRegressionReducer,

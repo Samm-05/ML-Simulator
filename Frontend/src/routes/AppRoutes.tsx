@@ -11,6 +11,8 @@ import ForgotPassword from '../features/auth/ForgotPassword';
 
 // Main Pages
 import Dashboard from '../features/dashboard/Dashboard';
+import MLCoachHomePage from '../features/coach/pages/MLCoachHomePage';
+import ModuleLessonPage from '../features/coach/pages/ModuleLessonPage';
 import PlaygroundLayout from '../features/playground/PlaygroundLayout';
 import PracticePage from '../features/practice/PracticePage';
 import LeaderboardPage from '../features/leaderboard/LeaderboardPage';
@@ -36,6 +38,8 @@ const AppRoutes: React.FC = () => {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/coach" element={<MLCoachHomePage />} />
+          <Route path="/coach/module/:moduleId" element={<ModuleLessonPage />} />
 
           {/* Playground Module & Nested Labs */}
           <Route path="/playground" element={<PlaygroundLayout />}>
