@@ -13,6 +13,7 @@ import { LeftPanel } from './components/LeftPanel';
 import { Center3DScene } from './components/Center3DScene';
 import { RightPanel } from './components/RightPanel';
 import { TimelineControls } from './components/TimelineControls';
+import { GuidedStepsPanel } from './components/GuidedStepsPanel';
 import { LiveGraphsPanel } from './components/LiveGraphsPanel';
 import { MathFormulaPanel } from './components/MathFormulaPanel';
 import { ExplanationPanel } from './components/ExplanationPanel';
@@ -22,7 +23,6 @@ import { Network } from 'lucide-react';
 
 const KMeansLab: React.FC = () => {
   const dispatch = useAppDispatch();
-  const kmeans = useAppSelector((state) => state.kmeans);
 
   const handleLoadExperiment = (exp: SavedExperiment) => {
     if (exp.parameters) {
@@ -104,6 +104,9 @@ const KMeansLab: React.FC = () => {
           <RecentExperimentsPanel algorithm="kmeans" onLoadExperiment={handleLoadExperiment} />
         </div>
       </div>
+
+      {/* Interactive Step-by-Step Guided Walkthrough */}
+      <GuidedStepsPanel />
 
       {/* Bottom Timeline Controls */}
       <TimelineControls />

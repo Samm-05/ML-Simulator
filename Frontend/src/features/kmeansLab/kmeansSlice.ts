@@ -83,6 +83,20 @@ const pseudoRandom = (seed: number) => {
   return x - Math.floor(x);
 };
 
+// Recommended default K for presets
+const PRESET_DEFAULT_K: Record<KMeansState['datasetPreset'], number> = {
+  separated: 3,
+  overlapping: 3,
+  blobs: 4,
+  circular: 2,
+  concentric: 2,
+  elongated: 2,
+  spiral: 3,
+  random: 3,
+  noise: 3,
+  custom: 3,
+};
+
 // Generate dataset preset points
 const generateDatasetPoints = (
   preset: KMeansState['datasetPreset'],
@@ -216,34 +230,7 @@ const generateDatasetPoints = (
       }
       break;
     }
-    case 'spiral': {
-      for (let i = 0; i < count; i++) {
-        const angle = (i / count) * 4 * Math.PI;
-        const radius = 0.5 + (i / count) * 4;
-        points.push({
-          id: `p-${i}`,
-          x: Math.cos(angle) * radius + (rand() - 0.5) * 0.4,
-          y: Math.sin(angle) * radius + (rand() - 0.5) * 0.4,
-          z: (rand() - 0.5) * 1.0,
-          cluster: -1,
-        });
-      }
-      break;
-    }
-    case 'noise': {
-      for (let i = 0; i < count; i++) {
-        points.push({
-          id: `p-${i}`,
-          x: (rand() - 0.5) * 9,
-          y: (rand() - 0.5) * 9,
-          z: (rand() - 0.5) * 6,
-          cluster: -1,
-        });
-      }
-      break;
-    }
     default: {
-      // Random distribution
       for (let i = 0; i < count; i++) {
         points.push({
           id: `p-${i}`,
@@ -354,16 +341,16 @@ const initializeCentroidPositions = (
       maxZ = Math.max(...points.map((p) => p.z));
     }
 
-    for (let i = 0; i < k; i++) {
+    for (let cIdx = 0; cIdx < k; cIdx++) {
       const cx = minX + rand() * (maxX - minX);
       const cy = minY + rand() * (maxY - minY);
       const cz = minZ + rand() * (maxZ - minZ);
       centroids.push({
-        id: i,
+        id: cIdx,
         x: cx,
         y: cy,
         z: cz,
-        color: CLUSTER_COLORS[i % CLUSTER_COLORS.length],
+        color: CLUSTER_COLORS[cIdx % CLUSTER_COLORS.length],
         history: [{ x: cx, y: cy, z: cz }],
       });
     }
@@ -372,7 +359,14 @@ const initializeCentroidPositions = (
   return centroids;
 };
 
-// Async Thunk: Save Experiment to Backend MongoDB
+// Initial state setup
+const initialSeed = 42;
+const initialDatasetPreset: KMeansState['datasetPreset'] = 'separated';
+const initialK = PRESET_DEFAULT_K[initialDatasetPreset];
+const initialPoints = generateDatasetPoints(initialDatasetPreset, initialSeed, 120);
+const initialCentroids = initializeCentroidPositions(initialK, initialPoints, 'kmeans++', initialSeed);
+
+// Async Thunk for saving experiment to MongoDB
 export const saveKMeansExperiment = createAsyncThunk(
   'kmeans/saveExperiment',
   async (_, { getState, rejectWithValue }) => {
@@ -380,54 +374,43 @@ export const saveKMeansExperiment = createAsyncThunk(
       const state = (getState() as { kmeans: KMeansState }).kmeans;
       const payload = {
         algorithm: 'kmeans',
-        parameters: {
+        datasetPreset: state.datasetPreset,
+        hyperparameters: {
           k: state.k,
           initializationMethod: state.initializationMethod,
           maxIterations: state.maxIterations,
           tolerance: state.tolerance,
-          datasetPreset: state.datasetPreset,
-          pointCount: state.dataPoints.length,
-          wcss: state.wcss,
-          iterationsCount: state.iterationsHistory.length,
         },
-        results: {
+        metrics: {
           wcss: state.wcss,
+          silhouetteScore: state.silhouetteScore,
+          iterationsToConvergence: state.currentStep,
           converged: state.isConverged,
-          totalSteps: state.iterationsHistory.length,
-          accuracy: Math.max(0.6, 1 - state.wcss / (state.dataPoints.length * 10 || 1)),
         },
+        centroids: state.centroids,
+        dataPointsCount: state.dataPoints.length,
       };
 
-      const runRes = await apiClient.post('/simulations/run', payload);
-      const saveRes = await apiClient.post('/simulations/save', {
-        title: `K-Means Clustering (K=${state.k}, ${state.datasetPreset})`,
-        algorithm: 'kmeans',
-        parameters: payload.parameters,
-        results: payload.results,
-      });
-
-      return { run: runRes.data, save: saveRes.data };
+      const response = await apiClient.post('/simulations/save', payload);
+      return response.data;
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.message || 'Failed to save experiment');
     }
   }
 );
 
-const initialPoints = generateDatasetPoints('separated', 42, 120);
-const initialCentroids = initializeCentroidPositions(3, initialPoints, 'kmeans++', 42);
-
 const initialState: KMeansState = {
-  k: 3,
+  k: initialK,
   initializationMethod: 'kmeans++',
   maxIterations: 20,
   tolerance: 0.001,
   animationSpeed: 1,
-  randomSeed: 42,
+  randomSeed: initialSeed,
   showLabels: true,
   showVoronoi: true,
   showTrajectories: true,
   viewportMode: '3d',
-  datasetPreset: 'separated',
+  datasetPreset: initialDatasetPreset,
   dataPoints: initialPoints,
   centroids: initialCentroids,
   historyStack: [],
@@ -439,7 +422,7 @@ const initialState: KMeansState = {
       assignments: initialPoints.map(() => -1),
       wcss: 0,
       movementDist: 0,
-      explanation: 'Initial centroids initialized using KMeans++ algorithm.',
+      explanation: 'Step 0: Unlabeled Data Points. Initial centroids initialized using KMeans++.',
     },
   ],
   currentStep: 0,
@@ -447,7 +430,7 @@ const initialState: KMeansState = {
   isConverged: false,
   isSaving: false,
   wcss: 0,
-  silhouetteScore: 0.72,
+  silhouetteScore: 0.78,
   elapsedTime: 0,
   fps: 60,
   lastSavedId: null,
@@ -466,9 +449,11 @@ export const kmeansSlice = createSlice({
         state.initializationMethod,
         state.randomSeed
       );
+      state.dataPoints.forEach((p) => (p.cluster = -1));
       state.isPlaying = false;
       state.isConverged = false;
       state.currentStep = 0;
+      state.wcss = 0;
       state.iterationsHistory = [
         {
           iteration: 0,
@@ -476,7 +461,7 @@ export const kmeansSlice = createSlice({
           assignments: state.dataPoints.map(() => -1),
           wcss: 0,
           movementDist: 0,
-          explanation: `Re-initialized K=${state.k} centroids using ${state.initializationMethod}.`,
+          explanation: `Re-initialized K=${state.k} centroids using ${state.initializationMethod}. Click Play or Step to begin clustering.`,
         },
       ];
     },
@@ -488,12 +473,17 @@ export const kmeansSlice = createSlice({
         state.initializationMethod,
         state.randomSeed
       );
+      state.dataPoints.forEach((p) => (p.cluster = -1));
       state.currentStep = 0;
       state.isConverged = false;
       state.isPlaying = false;
+      state.wcss = 0;
     },
     setDatasetPreset: (state, action: PayloadAction<KMeansState['datasetPreset']>) => {
       state.datasetPreset = action.payload;
+      const targetK = PRESET_DEFAULT_K[action.payload] || state.k;
+      state.k = targetK;
+      state.randomSeed += 1;
       state.dataPoints = generateDatasetPoints(action.payload, state.randomSeed, 120);
       state.centroids = initializeCentroidPositions(
         state.k,
@@ -501,9 +491,11 @@ export const kmeansSlice = createSlice({
         state.initializationMethod,
         state.randomSeed
       );
+      state.dataPoints.forEach((p) => (p.cluster = -1));
       state.currentStep = 0;
       state.isPlaying = false;
       state.isConverged = false;
+      state.wcss = 0;
       state.iterationsHistory = [
         {
           iteration: 0,
@@ -511,7 +503,7 @@ export const kmeansSlice = createSlice({
           assignments: state.dataPoints.map(() => -1),
           wcss: 0,
           movementDist: 0,
-          explanation: `Generated dataset preset '${action.payload}'. Centroids initialized.`,
+          explanation: `Generated preset '${action.payload}' with optimal K=${targetK}. Points unassigned. Click Play or Step Forward to run clustering!`,
         },
       ];
     },
@@ -577,7 +569,33 @@ export const kmeansSlice = createSlice({
       }
     },
     togglePlayPause: (state) => {
-      state.isPlaying = !state.isPlaying;
+      if (state.isConverged || state.currentStep >= state.maxIterations) {
+        // Auto-restart when clicking play on converged state
+        state.randomSeed += 1;
+        state.centroids = initializeCentroidPositions(
+          state.k,
+          state.dataPoints,
+          state.initializationMethod,
+          state.randomSeed
+        );
+        state.dataPoints.forEach((p) => (p.cluster = -1));
+        state.currentStep = 0;
+        state.isConverged = false;
+        state.isPlaying = true;
+        state.wcss = 0;
+        state.iterationsHistory = [
+          {
+            iteration: 0,
+            centroids: state.centroids.map((c) => ({ x: c.x, y: c.y, z: c.z })),
+            assignments: state.dataPoints.map(() => -1),
+            wcss: 0,
+            movementDist: 0,
+            explanation: 'Restarted simulation with fresh centroid placement.',
+          },
+        ];
+      } else {
+        state.isPlaying = !state.isPlaying;
+      }
     },
     stepForward: (state) => {
       if (state.isConverged || state.currentStep >= state.maxIterations) {
@@ -607,7 +625,7 @@ export const kmeansSlice = createSlice({
         }
       });
 
-      // Step 2: Recalculate centroid positions
+      // Step 2: Recalculate centroid positions (means)
       state.centroids.forEach((c) => {
         const assignedPts = state.dataPoints.filter((p) => p.cluster === c.id);
         if (assignedPts.length > 0) {
@@ -631,14 +649,14 @@ export const kmeansSlice = createSlice({
       state.wcss = currentWCSS;
       state.currentStep += 1;
 
-      // Check convergence condition (movement below tolerance or 0 assignments changed)
+      // Check convergence condition
       if (totalDistMovement < state.tolerance || !assignmentsChanged || state.currentStep >= state.maxIterations) {
         state.isConverged = true;
         state.isPlaying = false;
       }
 
       const explanation = state.isConverged
-        ? `Iteration ${state.currentStep}: Algorithm converged! Total centroid movement ${totalDistMovement.toFixed(4)} < tolerance ${state.tolerance}.`
+        ? `Iteration ${state.currentStep}: Algorithm converged! Total centroid movement ${totalDistMovement.toFixed(4)} < tolerance ${state.tolerance}. WCSS = ${currentWCSS.toFixed(2)}.`
         : `Iteration ${state.currentStep}: Assigned ${state.dataPoints.length} points to nearest centroids and updated means. WCSS = ${currentWCSS.toFixed(2)}.`;
 
       state.iterationsHistory.push({
@@ -679,6 +697,7 @@ export const kmeansSlice = createSlice({
       state.isPlaying = false;
       state.isConverged = false;
       state.currentStep = 0;
+      state.randomSeed += 1;
       state.centroids = initializeCentroidPositions(
         state.k,
         state.dataPoints,
@@ -694,7 +713,7 @@ export const kmeansSlice = createSlice({
           assignments: state.dataPoints.map(() => -1),
           wcss: 0,
           movementDist: 0,
-          explanation: 'Playback reset. Centroids restored to initial positions.',
+          explanation: 'Playback reset. Centroids re-placed and points unassigned.',
         },
       ];
     },
