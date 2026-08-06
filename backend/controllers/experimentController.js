@@ -39,7 +39,7 @@ exports.saveExperiment = async (req, res) => {
     });
 
     console.log(`[EXPERIMENT SAVED] User ${req.user.email} saved ${algorithm} experiment "${title}".`);
-    res.status(201).json(experiment.toJSON());
+    res.status(201).json(experiment.toJSON ? experiment.toJSON() : experiment);
   } catch (err) {
     console.error('[SAVE EXPERIMENT ERROR]:', err);
     res.status(500).json({ message: 'Server error saving experiment' });
@@ -50,14 +50,14 @@ exports.saveExperiment = async (req, res) => {
 exports.getUserExperiments = async (req, res) => {
   try {
     const { algorithm } = req.params;
-    const filter: any = { user: req.user._id };
+    const filter = { user: req.user._id };
 
     if (algorithm && algorithm !== 'all') {
       filter.algorithm = algorithm;
     }
 
     const experiments = await Experiment.find(filter).sort({ createdAt: -1 });
-    res.json(experiments.map((exp) => exp.toJSON()));
+    res.json(experiments.map((exp) => (exp.toJSON ? exp.toJSON() : exp)));
   } catch (err) {
     console.error('[GET USER EXPERIMENTS ERROR]:', err);
     res.status(500).json({ message: 'Server error fetching experiments' });
@@ -74,7 +74,7 @@ exports.getExperimentById = async (req, res) => {
       return res.status(404).json({ message: 'Experiment not found' });
     }
 
-    res.json(experiment.toJSON());
+    res.json(experiment.toJSON ? experiment.toJSON() : experiment);
   } catch (err) {
     console.error('[GET EXPERIMENT BY ID ERROR]:', err);
     res.status(500).json({ message: 'Server error fetching experiment' });

@@ -30,7 +30,8 @@ export const RightPanel: React.FC = () => {
       await dispatch(saveKMeansExperiment()).unwrap();
       toast.success('Experiment & progress saved successfully! +50 XP awarded.', { id: toastId });
     } catch (err: any) {
-      toast.error(err || 'Failed to save experiment', { id: toastId });
+      const msg = typeof err === 'string' ? err : (err?.message || 'Failed to save experiment');
+      toast.error(msg, { id: toastId });
     }
   };
 

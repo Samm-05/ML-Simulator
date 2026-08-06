@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import apiClient from '../../services/apiClient';
+import { experimentService } from '../../services/experimentService';
 
 export interface DataPoint {
   id: string;
@@ -374,12 +374,17 @@ export const saveKMeansExperiment = createAsyncThunk(
       const state = (getState() as { kmeans: KMeansState }).kmeans;
       const payload = {
         algorithm: 'kmeans',
-        datasetPreset: state.datasetPreset,
-        hyperparameters: {
+        title: `K-Means Clustering (K=${state.k}, Preset=${state.datasetPreset})`,
+        parameters: {
           k: state.k,
           initializationMethod: state.initializationMethod,
           maxIterations: state.maxIterations,
           tolerance: state.tolerance,
+          datasetPreset: state.datasetPreset,
+        },
+        dataset: {
+          preset: state.datasetPreset,
+          pointCount: state.dataPoints.length,
         },
         metrics: {
           wcss: state.wcss,
@@ -387,12 +392,16 @@ export const saveKMeansExperiment = createAsyncThunk(
           iterationsToConvergence: state.currentStep,
           converged: state.isConverged,
         },
-        centroids: state.centroids,
-        dataPointsCount: state.dataPoints.length,
+        visualizationState: {
+          viewportMode: state.viewportMode,
+          showLabels: state.showLabels,
+          showVoronoi: state.showVoronoi,
+          showTrajectories: state.showTrajectories,
+        },
       };
 
-      const response = await apiClient.post('/simulations/save', payload);
-      return response.data;
+      const res = await experimentService.saveExperiment(payload);
+      return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.message || 'Failed to save experiment');
     }
@@ -725,7 +734,7 @@ export const kmeansSlice = createSlice({
       })
       .addCase(saveKMeansExperiment.fulfilled, (state, action) => {
         state.isSaving = false;
-        state.lastSavedId = action.payload.save._id;
+        state.lastSavedId = action.payload?.id || action.payload?._id || null;
       })
       .addCase(saveKMeansExperiment.rejected, (state) => {
         state.isSaving = false;
