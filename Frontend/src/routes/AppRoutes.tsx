@@ -43,12 +43,12 @@ const AppRoutes: React.FC = () => {
 
           {/* Playground Module & Nested Labs */}
           <Route path="/playground" element={<PlaygroundLayout />}>
-            <Route index element={<Navigate to="/playground/nn-lab" replace />} />
-            <Route path="nn-lab" element={<NeuralNetworkLab />} />
+            <Route index element={<Navigate to="/playground/linear-lab" replace />} />
             <Route path="linear-lab" element={<LinearRegressionLab />} />
-            <Route path="logistic-lab" element={<LogisticRegressionLab />} />
             <Route path="gd-lab" element={<GradientDescentLab />} />
+            <Route path="logistic-lab" element={<LogisticRegressionLab />} />
             <Route path="overfitting-lab" element={<OverfittingLab />} />
+            <Route path="nn-lab" element={<NeuralNetworkLab />} />
           </Route>
 
           {/* Redirect Direct Lab Routes to Playground */}
